@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { flyTo } from './camera-moves.js'
+import { clusterTier } from '../data/scoring.js'
 
 /*
   hotspots.js
@@ -184,6 +185,26 @@ export function createHotspots({ systems, clusters, camera, controls, container,
     }
   }
 
+  const TIER_CLASSES = ['tier-hot', 'tier-warm', 'tier-cool']
+
+  // Recolor pins by opportunity tier. When heatmapOn is false, pins revert to the default dot.
+  function applyScores(scoreMap, heatmapOn) {
+    for (const p of systemPins) {
+      p.el.classList.remove(...TIER_CLASSES)
+      if (heatmapOn) {
+        const rec = scoreMap.get(p.data.id)
+        if (rec && rec.tier) p.el.classList.add('tier-' + rec.tier)
+      }
+    }
+    for (const p of clusterPins) {
+      p.el.classList.remove(...TIER_CLASSES)
+      if (heatmapOn) {
+        const tier = clusterTier(systems, p.data.id, scoreMap)
+        if (tier) p.el.classList.add('tier-' + tier)
+      }
+    }
+  }
+
   function markDirty() {
     dirty = true
   }
@@ -206,6 +227,7 @@ export function createHotspots({ systems, clusters, camera, controls, container,
     setZoneFilter,
     showAll,
     dim,
+    applyScores,
     markDirty,
     get expandedCluster() {
       return expanded

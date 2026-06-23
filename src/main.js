@@ -1,18 +1,26 @@
 import './styles/tokens.css'
 import './styles/app.css'
 import './styles/hotspots.css'
+import './styles/panel.css'
+import './styles/controls.css'
 import { createScene } from './scene/scene.js'
 import { loadHouse } from './scene/house.js'
 import { createHotspots } from './scene/hotspots.js'
 import { flyTo, reset as resetCamera } from './scene/camera-moves.js'
 import { systems as baseSystems, CLUSTERS } from './data/systems.js'
+import { computeScores, DEFAULT_WEIGHTS } from './data/scoring.js'
+import { createPanel } from './ui/panel.js'
+import { createControls } from './ui/filters.js'
+import { createLegend } from './ui/legend.js'
 
 /*
   main.js
-  Bootstraps the scene + house + hotspots and owns the single render loop.
-  ?stress=N pads the system list with N dummy anchors to load-test pin performance.
+  Bootstraps scene + house + hotspots + UI and owns the single render loop. Scoring state
+  (weights, heatmap on/off, current score map) lives here; refreshScores() recomputes and
+  pushes results to the hotspots, legend, and ranked list. ?stress=N load-tests the pins.
 */
 
+const app = document.getElementById('app')
 const canvas = document.getElementById('scene')
 const hotspotLayer = document.getElementById('hotspot-layer')
 const { scene, camera, renderer, controls } = createScene(canvas)
@@ -28,23 +36,75 @@ loadHouse().then((house) => {
   scene.add(house)
 })
 
+const state = {
+  weights: { ...DEFAULT_WEIGHTS },
+  heatmap: false,
+  scores: computeScores(systems, DEFAULT_WEIGHTS)
+}
+
+const panel = createPanel({
+  container: app,
+  onClose: () => hotspots.dim(null)
+})
+
 const hotspots = createHotspots({
   systems,
   clusters: CLUSTERS,
   camera,
   controls,
   container: hotspotLayer,
-  onSelect: (s) => {
-    flyTo(s.camera, camera, controls)
-    hotspots.dim(s.id)
-    // Panel opens here in P3.
+  onSelect: (s) => selectSystem(s)
+})
+
+const legend = createLegend({ container: app })
+
+const controlsUi = createControls({
+  container: app,
+  systems,
+  clusters: CLUSTERS,
+  getScores: () => state.scores,
+  initialWeights: state.weights,
+  handlers: {
+    onZone: (id) => {
+      if (id == null) {
+        hotspots.collapse()
+        resetCamera(camera, controls)
+      } else {
+        hotspots.expand(id)
+      }
+    },
+    onHeatmap: (on) => {
+      state.heatmap = on
+      refreshScores()
+    },
+    onWeights: (w) => {
+      state.weights = w
+      refreshScores()
+    },
+    onSelectSystem: (s) => selectSystem(s)
   }
 })
+
+function selectSystem(s) {
+  controls.autoRotate = false
+  flyTo(s.camera, camera, controls)
+  hotspots.dim(s.id)
+  panel.open(s, state.scores.get(s.id))
+}
+
+function refreshScores() {
+  state.scores = computeScores(systems, state.weights)
+  hotspots.applyScores(state.scores, state.heatmap)
+  legend.update(state.heatmap)
+  controlsUi.refreshList()
+}
+refreshScores()
 
 document.getElementById('reset-view').addEventListener('click', () => {
   controls.autoRotate = false
   hotspots.collapse()
   hotspots.dim(null)
+  panel.close()
   resetCamera(camera, controls)
 })
 
