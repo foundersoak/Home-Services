@@ -46,7 +46,7 @@ export const RESEARCH = {
       {
         "name": "Service Experts (Enercare)",
         "approxRevenue": {
-          "value": 1,
+          "value": null,
           "unit": "billion",
           "source": null
         },
@@ -59,7 +59,7 @@ export const RESEARCH = {
       {
         "name": "Sila Services",
         "approxRevenue": {
-          "value": 1,
+          "value": null,
           "unit": "billion",
           "source": null
         },
@@ -2406,7 +2406,7 @@ export const RESEARCH = {
       "total": {
         "value": 19,
         "unit": "billion",
-        "source": null
+        "source": "src-1"
       },
       "newConstruction": {
         "value": 2.5,

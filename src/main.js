@@ -3,6 +3,7 @@ import './styles/app.css'
 import './styles/hotspots.css'
 import './styles/panel.css'
 import './styles/controls.css'
+import * as THREE from 'three'
 import { createScene } from './scene/scene.js'
 import { loadHouse } from './scene/house.js'
 import { createHotspots } from './scene/hotspots.js'
@@ -52,13 +53,19 @@ const panel = createPanel({
   onClose: () => hotspots.dim(null)
 })
 
+// Box proxy of the house mass for raycaster occlusion (hides pins behind the building).
+const occluder = new THREE.Mesh(new THREE.BoxGeometry(6.4, 4.4, 4.8))
+occluder.position.set(-0.2, 2.3, -0.1)
+occluder.updateMatrixWorld(true)
+
 const hotspots = createHotspots({
   systems,
   clusters: CLUSTERS,
   camera,
   controls,
   container: hotspotLayer,
-  onSelect: (s) => selectSystem(s)
+  onSelect: (s) => selectSystem(s),
+  occluder
 })
 
 const legend = createLegend({ container: app })
@@ -111,6 +118,12 @@ function refreshScores() {
 }
 refreshScores()
 
+// Data integrity check (dev build, or ?validate): every non-null numeric must trace to a
+// resolving source id, unless it is a flagged modeled estimate. Enforces "no naked numbers".
+if (import.meta.env.DEV || new URLSearchParams(location.search).has('validate')) {
+  validateData(systems)
+}
+
 document.getElementById('reset-view').addEventListener('click', () => {
   controls.autoRotate = false
   hotspots.collapse()
@@ -142,6 +155,32 @@ function tick() {
   renderer.render(scene, camera)
 }
 tick()
+
+function validateData(list) {
+  let issues = 0
+  for (const s of list) {
+    if (s.dataStatus === 'stub') continue
+    const ids = new Set((s.sources || []).map((x) => x.id))
+    const check = (val, src, label, modeled) => {
+      if (val == null || modeled) return
+      if (!src) {
+        console.warn(`[data] ${s.id}: ${label}=${val} has no source (naked number)`)
+        issues++
+      } else if (!ids.has(src)) {
+        console.warn(`[data] ${s.id}: ${label} source '${src}' is not in sources[]`)
+        issues++
+      }
+    }
+    const t = s.tam || {}
+    check(t.total && t.total.value, t.total && t.total.source, 'tam.total')
+    check(t.newConstruction && t.newConstruction.value, t.newConstruction && t.newConstruction.source, 'tam.newConstruction', t.newConstruction && t.newConstruction.modeledEstimate)
+    check(t.renovationRepair && t.renovationRepair.value, t.renovationRepair && t.renovationRepair.source, 'tam.renovationRepair', t.renovationRepair && t.renovationRepair.modeledEstimate)
+    for (const p of s.topPlayers || []) check(p.approxRevenue && p.approxRevenue.value, p.approxRevenue && p.approxRevenue.source, `player "${p.name}" revenue`)
+    check(s.fragmentation && s.fragmentation.score, s.fragmentation && s.fragmentation.source, 'fragmentation')
+  }
+  if (issues) console.warn(`[data] ${issues} citation issue(s) across ${list.length} systems`)
+  else console.info(`[data] OK: every non-null numeric in ${list.filter((s) => s.dataStatus !== 'stub').length} populated systems traces to a source`)
+}
 
 // Deterministic dummy systems ringed around the house for pin stress-testing.
 function makeStress(n) {

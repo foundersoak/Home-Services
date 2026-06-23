@@ -15,9 +15,12 @@ import { clusterTier } from '../data/scoring.js'
   filter) expands it into its individual system pins. Only one set is processed per frame.
 */
 
-export function createHotspots({ systems, clusters, camera, controls, container, onSelect }) {
+export function createHotspots({ systems, clusters, camera, controls, container, onSelect, occluder }) {
   const size = { w: window.innerWidth, h: window.innerHeight }
   const _v = new THREE.Vector3()
+  const _ray = new THREE.Raycaster()
+  const _origin = new THREE.Vector3()
+  const _rdir = new THREE.Vector3()
 
   let expanded = null // null = clustered | 'all' = every system | clusterId = one cluster
   let dirty = true
@@ -132,6 +135,20 @@ export function createHotspots({ systems, clusters, camera, controls, container,
         const vl = Math.hypot(vx, vy, vz) || 1
         const dot = (n[0] * vx + n[1] * vy + n[2] * vz) / vl
         if (dot < -0.05) {
+          hide(p)
+          continue
+        }
+      }
+
+      // Raycaster occlusion: hide pins blocked by the house body (cheap box proxy).
+      if (occluder) {
+        _origin.set(cx, cy, cz)
+        _rdir.set(a[0] - cx, a[1] - cy, a[2] - cz)
+        const dist = _rdir.length()
+        _ray.set(_origin, _rdir.normalize())
+        _ray.near = 0
+        _ray.far = dist - 0.25
+        if (_ray.intersectObject(occluder, false).length > 0) {
           hide(p)
           continue
         }
