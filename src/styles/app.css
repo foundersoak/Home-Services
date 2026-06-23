@@ -22,6 +22,12 @@ body {
 #app {
   position: fixed;
   inset: 0;
+  background: radial-gradient(
+    125% 90% at 50% 8%,
+    var(--stage-top) 0%,
+    var(--stage-bottom) 58%,
+    #0a120e 100%
+  );
 }
 
 #scene {
