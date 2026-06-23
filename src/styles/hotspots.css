@@ -1,0 +1,127 @@
+/* Hotspot pins: small, elegant, projected over the canvas. */
+
+.hotspot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--sans);
+  cursor: pointer;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.35s ease;
+  will-change: transform, opacity;
+  z-index: 2;
+}
+
+.hotspot.is-hidden {
+  opacity: 0;
+  pointer-events: none !important;
+}
+
+.hotspot.is-dimmed {
+  opacity: 0.22;
+}
+
+/* Dot */
+.hotspot-dot {
+  position: relative;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--gold-light);
+  border: 2px solid var(--paper);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.28), 0 2px 9px rgba(0, 0, 0, 0.4);
+  flex: none;
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.hotspot.is-cluster .hotspot-dot {
+  width: 16px;
+  height: 16px;
+  background: var(--forest);
+}
+
+.hotspot:hover .hotspot-dot {
+  transform: scale(1.22);
+}
+
+/* Idle pulse ring */
+.hotspot-dot::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  background: inherit;
+  opacity: 0.45;
+  animation: hs-pulse 2.6s ease-out infinite;
+  z-index: -1;
+}
+
+@keyframes hs-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  70%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+/* Label: collapsed to ~0 width until hover (clusters stay open) */
+.hotspot-label {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 0;
+  opacity: 0;
+  padding: 5px 0;
+  color: var(--paper);
+  background: rgba(18, 22, 26, 0.72);
+  backdrop-filter: blur(9px) saturate(120%);
+  -webkit-backdrop-filter: blur(9px) saturate(120%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: var(--radius);
+  transition: max-width 0.28s ease, opacity 0.2s ease, padding 0.28s ease;
+}
+
+.hotspot:hover .hotspot-label,
+.hotspot.is-cluster .hotspot-label {
+  max-width: 280px;
+  opacity: 1;
+  padding: 5px 10px;
+}
+
+.hs-name {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.hs-sub {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  opacity: 0.72;
+}
+
+/* Heatmap tier coloring (applied in P3 via .tier-* on the pin) */
+.hotspot.tier-hot .hotspot-dot {
+  background: var(--tier-hot);
+}
+.hotspot.tier-warm .hotspot-dot {
+  background: var(--tier-warm);
+}
+.hotspot.tier-cool .hotspot-dot {
+  background: var(--tier-cool);
+}
