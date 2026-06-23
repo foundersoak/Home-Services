@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js'
 
 /*
   scene.js
@@ -21,18 +22,23 @@ export function createScene(canvas) {
 
   const scene = new THREE.Scene()
 
+  // HDR-style image-based lighting so PBR materials read with real reflections and
+  // soft ambient, instead of flat plastic. RoomEnvironment is a procedural studio.
+  const pmrem = new THREE.PMREMGenerator(renderer)
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+
   const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 200)
-  camera.position.set(9.5, 6.8, 11.5)
+  camera.position.set(13, 9, 16)
 
   const controls = new OrbitControls(camera, canvas)
   controls.enableDamping = true
   controls.dampingFactor = 0.06
   controls.enablePan = false
-  controls.minDistance = 7
-  controls.maxDistance = 24
+  controls.minDistance = 9
+  controls.maxDistance = 34
   controls.minPolarAngle = 0.12
   controls.maxPolarAngle = Math.PI / 2 - 0.04 // never dip below the ground plane
-  controls.target.set(0, 1.7, 0)
+  controls.target.set(0, 2.2, 0)
   controls.autoRotate = true
   controls.autoRotateSpeed = 0.35
 

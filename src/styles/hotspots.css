@@ -102,6 +102,13 @@
   padding: 5px 10px;
 }
 
+/* Calibration mode: force every label open so anchors can be tuned from a screenshot. */
+.calib-mode .hotspot-label {
+  max-width: 280px !important;
+  opacity: 1 !important;
+  padding: 5px 10px !important;
+}
+
 .hs-name {
   font-size: 12px;
   font-weight: 600;

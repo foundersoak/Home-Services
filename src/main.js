@@ -34,6 +34,11 @@ if (stress) {
 
 loadHouse().then((house) => {
   scene.add(house)
+  const loader = document.getElementById('loader')
+  if (loader) {
+    loader.classList.add('is-gone')
+    setTimeout(() => loader.remove(), 800)
+  }
 })
 
 const state = {
@@ -85,6 +90,12 @@ const controlsUi = createControls({
   }
 })
 
+// Calibration mode (?calib): show every pin with its label forced visible, for anchor tuning.
+if (new URLSearchParams(location.search).has('calib')) {
+  app.classList.add('calib-mode')
+  hotspots.showAll()
+}
+
 function selectSystem(s) {
   controls.autoRotate = false
   flyTo(s.camera, camera, controls)
@@ -113,6 +124,16 @@ function stopAutoRotate() {
   controls.removeEventListener('start', stopAutoRotate)
 }
 controls.addEventListener('start', stopAutoRotate)
+
+// Dissolve the landing hero on first interaction.
+const intro = document.getElementById('intro')
+window.addEventListener(
+  'pointerdown',
+  () => {
+    if (intro) intro.classList.add('is-gone')
+  },
+  { once: true }
+)
 
 function tick() {
   requestAnimationFrame(tick)

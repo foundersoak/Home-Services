@@ -62,7 +62,7 @@ export function createHotspots({ systems, clusters, camera, controls, container,
     return { el, kind: 'system', data: s, anchor: s.position, normal: s.normal }
   })
 
-  const clusterPins = clusters.map((c) => {
+  const clusterPins = clusters.filter((c) => memberCount[c.id] > 0).map((c) => {
     const el = makePinEl(true)
     el.querySelector('.hs-name').textContent = c.name
     el.querySelector('.hs-sub').textContent = memberCount[c.id] + ' systems'

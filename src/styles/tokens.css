@@ -47,4 +47,15 @@
 
   /* Radius */
   --radius: 2px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Z-index scale */
+  --z-legend: 4;
+  --z-topbar: 5;
+  --z-dock: 6;
+  --z-pop: 7;
+  --z-panel: 8;
 }

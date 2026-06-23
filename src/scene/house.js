@@ -11,7 +11,24 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
   and camera framings in src/data/systems.js against the new geometry.
 */
 
-export const MODEL_URL = null
+export const MODEL_URL = 'house.glb'
+
+// Scale a loaded model so its largest horizontal footprint is TARGET_FOOTPRINT units,
+// center it on the origin in XZ, and sit it on the ground. Keeps any GLB drop-in working
+// regardless of the source model's units or origin.
+const TARGET_FOOTPRINT = 12
+
+function normalizeModel(root) {
+  let box = new THREE.Box3().setFromObject(root)
+  const size = box.getSize(new THREE.Vector3())
+  const maxHoriz = Math.max(size.x, size.z) || 1
+  root.scale.setScalar(TARGET_FOOTPRINT / maxHoriz)
+  box = new THREE.Box3().setFromObject(root)
+  const center = box.getCenter(new THREE.Vector3())
+  root.position.x -= center.x
+  root.position.z -= center.z
+  root.position.y -= box.min.y
+}
 
 export async function loadHouse() {
   if (MODEL_URL) {
@@ -25,6 +42,7 @@ export async function loadHouse() {
         o.receiveShadow = true
       }
     })
+    normalizeModel(root)
     return root
   }
   return buildPlaceholderHouse()

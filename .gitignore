@@ -4,5 +4,11 @@ dist
 .DS_Store
 *.log
 .vite
-smoke.mjs
+*.mjs
 *.png
+contact.html
+contact2.html
+heroes.html
+views.html
+details.html
+_calibsheet.html
