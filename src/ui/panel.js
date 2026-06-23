@@ -8,6 +8,8 @@
   note instead of fabricated numbers.
 */
 
+const BASE = import.meta.env.BASE_URL
+
 const ZONE_LABELS = {
   envelope: 'Envelope & Structure',
   'core-mechanical': 'Core Mechanical',
@@ -119,6 +121,9 @@ function renderSystem(s, score) {
   const tier = score && score.tier
 
   return `
+    ${s.image
+      ? `<figure class="sys-hero"><img src="${esc(BASE + s.image)}" alt="${esc(s.name)}" loading="lazy" onerror="this.closest('.sys-hero').remove()" /></figure>`
+      : ''}
     <header class="sys-head">
       <div class="sys-eyebrow">${esc(ZONE_LABELS[s.zone] || s.zone)}</div>
       <h2 class="sys-title">${esc(s.name)}</h2>

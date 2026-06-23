@@ -65,6 +65,9 @@ function stub(o) {
     zone: o.zone,
     displayCluster: o.displayCluster,
     name: o.name,
+    // Panel hero image (referenced to the master house). Pass image:null for systems
+    // that do not have a generated render yet.
+    image: o.image !== undefined ? o.image : 'systems/' + o.id + '.webp',
     position,
     normal: o.normal || outward(position),
     camera: o.camera || frameFor(position, o.dist, o.lift),
