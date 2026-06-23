@@ -98,7 +98,7 @@ export const systems = [
   stub({ id: 'foundation', zone: 'envelope', displayCluster: 'envelope', name: 'Foundation & Waterproofing', position: [-1.8, 0.45, 2.8], normal: [-0.2, -0.1, 1], tam: 5, frag: 4, roll: 3 }),
 
   // Zone B: Core mechanical
-  stub({ id: 'hvac', zone: 'core-mechanical', displayCluster: 'mechanical', name: 'HVAC', position: [3.5, 0.8, 1.2], normal: [1, 0.2, 0.3], tam: 111, frag: 5, roll: 4 }),
+  stub({ id: 'hvac', zone: 'core-mechanical', displayCluster: 'mechanical', name: 'HVAC', position: [3.7, 0.6, -0.3], normal: [1, 0.2, -0.1], tam: 111, frag: 5, roll: 4 }),
   stub({ id: 'plumbing', zone: 'core-mechanical', displayCluster: 'mechanical', name: 'Plumbing', position: [3.4, 1.7, -0.4], normal: [1, 0.2, 0], tam: 47, frag: 5, roll: 3 }),
   stub({ id: 'electrical', zone: 'core-mechanical', displayCluster: 'mechanical', name: 'Electrical', position: [3.4, 2.2, 0.3], normal: [1, 0.2, 0], tam: 30, frag: 5, roll: 3 }),
   stub({ id: 'water-heater', zone: 'core-mechanical', displayCluster: 'mechanical', name: 'Water Heater / Tankless', position: [3.3, 1.2, -1.2], normal: [1, 0.2, -0.2], tam: 6, frag: 4, roll: 2 }),
@@ -108,7 +108,7 @@ export const systems = [
   stub({ id: 'tree-arbor', zone: 'yard', displayCluster: 'yard', name: 'Tree & Arbor', position: [4.4, 2.4, -2.6], normal: [1, 0.3, -0.6], tam: 31, frag: 5, roll: 3 }),
   stub({ id: 'fencing', zone: 'yard', displayCluster: 'yard', name: 'Fencing', position: [-3.6, 0.6, 3.2], normal: [-0.4, 0.2, 1], tam: 9, frag: 5, roll: 2 }),
   stub({ id: 'pest-control', zone: 'yard', displayCluster: 'yard', name: 'Pest Control', position: [-3.5, 0.5, -0.5], normal: [-1, 0.2, 0], tam: 18, frag: 3, roll: 5 }),
-  stub({ id: 'pool-spa', zone: 'yard', displayCluster: 'yard', name: 'Pool & Spa', position: [4.0, 0.5, 0.8], normal: [1, 0.4, 0.3], tam: 15, frag: 4, roll: 3 }),
+  stub({ id: 'pool-spa', zone: 'yard', displayCluster: 'yard', name: 'Pool & Spa', position: [2.2, 0.4, -2.6], normal: [0.3, 0.6, -0.5], tam: 15, frag: 4, roll: 3 }),
 
   // Zone D: Energy & specialty
   stub({ id: 'solar', zone: 'energy', displayCluster: 'energy', name: 'Solar & Battery Storage', position: [-0.6, 4.3, 0.6], normal: [0, 0.9, 0.4], tam: 25, frag: 4, roll: 2 })
