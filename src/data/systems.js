@@ -28,6 +28,8 @@
 
 // The six level-of-detail display clusters. anchor is an optional explicit cluster-pin
 // position; when omitted, hotspots.js uses the centroid of the cluster's member anchors.
+import { RESEARCH } from './research-data.js'
+
 export const CLUSTERS = [
   { id: 'envelope', name: 'Envelope & Structure', anchor: [0, 5.2, 0.2] },
   { id: 'mechanical', name: 'Core Mechanical', anchor: [3.6, 2.4, 0.4] },
@@ -57,20 +59,41 @@ function outward(pos) {
   return [pos[0] / len, 0.15, pos[2] / len]
 }
 
-// Helper to build a stub record with placeholder figures.
+// Build a record: authored geometry/image + researched data when available, else a
+// placeholder marked dataStatus 'stub'. The dummy tam/frag/roll args are used only by
+// the placeholder path (systems not yet researched).
 function stub(o) {
   const position = o.position
-  return {
+  const geometry = {
     id: o.id,
     zone: o.zone,
     displayCluster: o.displayCluster,
     name: o.name,
-    // Panel hero image (referenced to the master house). Pass image:null for systems
-    // that do not have a generated render yet.
+    // Panel hero image (referenced to the master house). Pass image:null if none exists.
     image: o.image !== undefined ? o.image : 'systems/' + o.id + '.webp',
     position,
     normal: o.normal || outward(position),
     camera: o.camera || frameFor(position, o.dist, o.lift),
+    opportunityTier: null
+  }
+
+  const data = RESEARCH[o.id]
+  if (data) {
+    return {
+      ...geometry,
+      dataStatus: data.dataStatus || 'in-progress',
+      confidence: data.confidence,
+      tam: data.tam,
+      topPlayers: data.topPlayers || [],
+      rollups: data.rollups || [],
+      fragmentation: data.fragmentation || { score: null, rationale: '', source: null },
+      rollupIntensity: data.rollupIntensity || { score: null, rationale: '' },
+      sources: data.sources || []
+    }
+  }
+
+  return {
+    ...geometry,
     dataStatus: 'stub',
     tam: {
       currency: 'USD',
@@ -85,7 +108,6 @@ function stub(o) {
     rollups: [],
     fragmentation: { score: o.frag ?? null, rationale: '', source: null },
     rollupIntensity: { score: o.roll ?? null, rationale: '' },
-    opportunityTier: null,
     sources: []
   }
 }
