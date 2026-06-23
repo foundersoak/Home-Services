@@ -17,8 +17,8 @@ export function createScene(canvas) {
   renderer.shadowMap.enabled = true
   renderer.shadowMap.type = THREE.PCFSoftShadowMap
   renderer.outputColorSpace = THREE.SRGBColorSpace
-  renderer.toneMapping = THREE.ACESFilmicToneMapping
-  renderer.toneMappingExposure = 1.04
+  renderer.toneMapping = THREE.AgXToneMapping
+  renderer.toneMappingExposure = 1.25
 
   const scene = new THREE.Scene()
 
@@ -26,9 +26,10 @@ export function createScene(canvas) {
   // soft ambient, instead of flat plastic. RoomEnvironment is a procedural studio.
   const pmrem = new THREE.PMREMGenerator(renderer)
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+  scene.environmentIntensity = 0.42 // less flat ambient, more directional contrast
 
   const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 200)
-  camera.position.set(13, 9, 16)
+  camera.position.set(14, 10.5, 17)
 
   const controls = new OrbitControls(camera, canvas)
   controls.enableDamping = true
@@ -44,10 +45,10 @@ export function createScene(canvas) {
 
   // Soft studio lighting: warm hemisphere fill, a warm key (the only shadow caster),
   // and a cool low fill to keep the shadow side from going dead.
-  scene.add(new THREE.HemisphereLight(0xf3eee2, 0x1b2820, 0.85))
+  scene.add(new THREE.HemisphereLight(0xf3eee2, 0x1b2820, 0.28))
 
-  const key = new THREE.DirectionalLight(0xfff5e6, 2.2)
-  key.position.set(8, 13, 7)
+  const key = new THREE.DirectionalLight(0xfff4e2, 3.1)
+  key.position.set(9, 15, 8)
   key.castShadow = true
   key.shadow.mapSize.set(2048, 2048)
   key.shadow.camera.near = 1
@@ -57,12 +58,13 @@ export function createScene(canvas) {
   key.shadow.camera.top = 14
   key.shadow.camera.bottom = -14
   key.shadow.bias = -0.0004
-  key.shadow.radius = 7
+  key.shadow.radius = 4
   scene.add(key)
 
-  const fill = new THREE.DirectionalLight(0xbcd2c6, 0.45)
-  fill.position.set(-9, 5, -7)
-  scene.add(fill)
+  // Cool rim light from behind for edge separation (reduces the flat 'clay' read).
+  const rim = new THREE.DirectionalLight(0xbfe0ff, 1.1)
+  rim.position.set(-8, 7, -10)
+  scene.add(rim)
 
   // Invisible plane that only renders the contact shadow.
   const ground = new THREE.Mesh(

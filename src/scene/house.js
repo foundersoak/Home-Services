@@ -40,6 +40,8 @@ export async function loadHouse() {
       if (o.isMesh) {
         o.castShadow = true
         o.receiveShadow = true
+        const mats = Array.isArray(o.material) ? o.material : [o.material]
+        for (const m of mats) if (m) m.envMapIntensity = 0.5
       }
     })
     normalizeModel(root)

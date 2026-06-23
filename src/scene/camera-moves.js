@@ -8,8 +8,8 @@ import gsap from 'gsap'
 */
 
 export const DEFAULT_FRAMING = {
-  pos: [13, 9, 16],
-  target: [0, 2.2, 0]
+  pos: [14, 10.5, 17],
+  target: [0, 2, 0]
 }
 
 let active = null

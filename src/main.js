@@ -4,6 +4,10 @@ import './styles/hotspots.css'
 import './styles/panel.css'
 import './styles/controls.css'
 import * as THREE from 'three'
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
+import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js'
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js'
 import { createScene } from './scene/scene.js'
 import { loadHouse } from './scene/house.js'
 import { createHotspots } from './scene/hotspots.js'
@@ -25,6 +29,21 @@ const app = document.getElementById('app')
 const canvas = document.getElementById('scene')
 const hotspotLayer = document.getElementById('hotspot-layer')
 const { scene, camera, renderer, controls } = createScene(canvas)
+
+// Ambient-occlusion post-processing for depth/definition. Desktop-only (skip on small
+// screens, where SSAO is too expensive); those fall back to a plain render.
+let composer = null
+if (window.innerWidth >= 900) {
+  composer = new EffectComposer(renderer)
+  composer.addPass(new RenderPass(scene, camera))
+  const ssao = new SSAOPass(scene, camera, window.innerWidth, window.innerHeight)
+  ssao.kernelRadius = 0.6
+  ssao.minDistance = 0.002
+  ssao.maxDistance = 0.08
+  composer.addPass(ssao)
+  composer.addPass(new OutputPass())
+  window.addEventListener('resize', () => composer.setSize(window.innerWidth, window.innerHeight))
+}
 
 let systems = baseSystems
 const stress = new URLSearchParams(location.search).get('stress')
@@ -152,7 +171,8 @@ function tick() {
   requestAnimationFrame(tick)
   controls.update()
   hotspots.update()
-  renderer.render(scene, camera)
+  if (composer) composer.render()
+  else renderer.render(scene, camera)
 }
 tick()
 
