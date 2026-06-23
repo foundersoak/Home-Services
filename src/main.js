@@ -9,7 +9,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
 import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js'
 import { createScene } from './scene/scene.js'
-import { loadHouse } from './scene/house.js'
+import { loadHouse, loadInterior } from './scene/house.js'
 import { createHotspots } from './scene/hotspots.js'
 import { flyTo, reset as resetCamera } from './scene/camera-moves.js'
 import { systems as baseSystems, CLUSTERS } from './data/systems.js'
@@ -52,7 +52,14 @@ if (stress) {
   systems = baseSystems.concat(makeStress(target - baseSystems.length))
 }
 
+// Exterior <-> interior scene state.
+let houseGroup = null
+let interiorGroup = null
+let mode = 'exterior'
+const veil = document.getElementById('stage-veil')
+
 loadHouse().then((house) => {
+  houseGroup = house
   scene.add(house)
   const loader = document.getElementById('loader')
   if (loader) {
@@ -60,6 +67,16 @@ loadHouse().then((house) => {
     setTimeout(() => loader.remove(), 800)
   }
 })
+
+loadInterior()
+  .then((room) => {
+    room.visible = false
+    interiorGroup = room
+    scene.add(room)
+  })
+  .catch(() => {
+    // No interior model present; interior systems fall back to an exterior framing.
+  })
 
 const state = {
   weights: { ...DEFAULT_WEIGHTS },
@@ -69,7 +86,10 @@ const state = {
 
 const panel = createPanel({
   container: app,
-  onClose: () => hotspots.dim(null)
+  onClose: () => {
+    hotspots.dim(null)
+    if (mode === 'interior') exitInterior()
+  }
 })
 
 // Box proxy of the house mass for raycaster occlusion (hides pins behind the building).
@@ -122,11 +142,45 @@ if (new URLSearchParams(location.search).has('calib')) {
   hotspots.showAll()
 }
 
+// Default interior framing (overridden per system by interiorCamera).
+const DEFAULT_INTERIOR = { pos: [5.5, 4, 7], target: [-0.3, 2.3, -0.8] }
+
+function enterInterior(s) {
+  veil.classList.add('is-active')
+  setTimeout(() => {
+    mode = 'interior'
+    if (houseGroup) houseGroup.visible = false
+    if (interiorGroup) interiorGroup.visible = true
+    hotspots.setVisible(false)
+    flyTo(s.interiorCamera || DEFAULT_INTERIOR, camera, controls, { duration: 0.4 })
+    veil.classList.remove('is-active')
+  }, 330)
+}
+
+function exitInterior(framing) {
+  veil.classList.add('is-active')
+  setTimeout(() => {
+    mode = 'exterior'
+    if (interiorGroup) interiorGroup.visible = false
+    if (houseGroup) houseGroup.visible = true
+    hotspots.setVisible(true)
+    if (framing) flyTo(framing, camera, controls, { duration: 0.4 })
+    else resetCamera(camera, controls, { duration: 0.4 })
+    veil.classList.remove('is-active')
+  }, 330)
+}
+
 function selectSystem(s) {
   controls.autoRotate = false
-  flyTo(s.camera, camera, controls)
   hotspots.dim(s.id)
   panel.open(s, state.scores.get(s.id))
+  if (s.interior && interiorGroup) {
+    enterInterior(s)
+  } else if (mode === 'interior') {
+    exitInterior(s.camera)
+  } else {
+    flyTo(s.camera, camera, controls)
+  }
 }
 
 function refreshScores() {
@@ -148,7 +202,8 @@ document.getElementById('reset-view').addEventListener('click', () => {
   hotspots.collapse()
   hotspots.dim(null)
   panel.close()
-  resetCamera(camera, controls)
+  if (mode === 'interior') exitInterior()
+  else resetCamera(camera, controls)
 })
 
 function stopAutoRotate() {

@@ -45,6 +45,20 @@ body {
   overflow: hidden;
 }
 
+/* Transition veil: dips to the stage color to mask the exterior<->interior swap */
+#stage-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(125% 90% at 50% 8%, var(--stage-top) 0%, var(--stage-bottom) 58%, #0a120e 100%);
+  transition: opacity 0.32s ease;
+}
+#stage-veil.is-active {
+  opacity: 1;
+}
+
 /* Loading overlay (until the model resolves) */
 .loader {
   position: absolute;

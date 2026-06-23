@@ -24,6 +24,7 @@ export function createHotspots({ systems, clusters, camera, controls, container,
 
   let expanded = null // null = clustered | 'all' = every system | clusterId = one cluster
   let dirty = true
+  let forceHidden = false // true while inside the interior scene
   let activePins = []
 
   const memberCount = {}
@@ -105,6 +106,7 @@ export function createHotspots({ systems, clusters, camera, controls, container,
   }
 
   function update() {
+    if (forceHidden) return
     if (!dirty) return
     const w = size.w
     const h = size.h
@@ -226,6 +228,17 @@ export function createHotspots({ systems, clusters, camera, controls, container,
     dirty = true
   }
 
+  // Hide every pin (e.g. while the camera is inside the interior scene), or restore.
+  function setVisible(v) {
+    forceHidden = !v
+    if (!v) {
+      systemPins.forEach(hide)
+      clusterPins.forEach(hide)
+    } else {
+      recomputeActive()
+    }
+  }
+
   controls.addEventListener('change', () => {
     dirty = true
   })
@@ -246,6 +259,7 @@ export function createHotspots({ systems, clusters, camera, controls, container,
     dim,
     applyScores,
     markDirty,
+    setVisible,
     get expandedCluster() {
       return expanded
     }

@@ -12,17 +12,17 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 */
 
 export const MODEL_URL = 'house.glb'
+// Separate interior "mechanical room" scene the camera flies into for interior systems.
+export const INTERIOR_URL = 'interior.glb'
 
 // Scale a loaded model so its largest horizontal footprint is TARGET_FOOTPRINT units,
 // center it on the origin in XZ, and sit it on the ground. Keeps any GLB drop-in working
 // regardless of the source model's units or origin.
-const TARGET_FOOTPRINT = 12
-
-function normalizeModel(root) {
+function normalizeModel(root, footprint) {
   let box = new THREE.Box3().setFromObject(root)
   const size = box.getSize(new THREE.Vector3())
   const maxHoriz = Math.max(size.x, size.z) || 1
-  root.scale.setScalar(TARGET_FOOTPRINT / maxHoriz)
+  root.scale.setScalar(footprint / maxHoriz)
   box = new THREE.Box3().setFromObject(root)
   const center = box.getCenter(new THREE.Vector3())
   root.position.x -= center.x
@@ -30,24 +30,30 @@ function normalizeModel(root) {
   root.position.y -= box.min.y
 }
 
+async function loadGLB(url, footprint) {
+  const loader = new GLTFLoader()
+  const full = import.meta.env.BASE_URL + String(url).replace(/^\//, '')
+  const gltf = await loader.loadAsync(full)
+  const root = gltf.scene
+  root.traverse((o) => {
+    if (o.isMesh) {
+      o.castShadow = true
+      o.receiveShadow = true
+      const mats = Array.isArray(o.material) ? o.material : [o.material]
+      for (const m of mats) if (m) m.envMapIntensity = 0.5
+    }
+  })
+  normalizeModel(root, footprint)
+  return root
+}
+
 export async function loadHouse() {
-  if (MODEL_URL) {
-    const loader = new GLTFLoader()
-    const url = import.meta.env.BASE_URL + String(MODEL_URL).replace(/^\//, '')
-    const gltf = await loader.loadAsync(url)
-    const root = gltf.scene
-    root.traverse((o) => {
-      if (o.isMesh) {
-        o.castShadow = true
-        o.receiveShadow = true
-        const mats = Array.isArray(o.material) ? o.material : [o.material]
-        for (const m of mats) if (m) m.envMapIntensity = 0.5
-      }
-    })
-    normalizeModel(root)
-    return root
-  }
+  if (MODEL_URL) return loadGLB(MODEL_URL, 12)
   return buildPlaceholderHouse()
+}
+
+export async function loadInterior() {
+  return loadGLB(INTERIOR_URL, 9)
 }
 
 // ---------------------------------------------------------------------------
