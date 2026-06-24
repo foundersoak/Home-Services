@@ -35,8 +35,8 @@ export const CLUSTERS = [
   { id: 'mechanical', name: 'Core Mechanical', anchor: [3.6, 2.4, 0.4] },
   { id: 'yard', name: 'Yard & Exterior', anchor: [3.9, 1.2, 2.2] },
   { id: 'energy', name: 'Energy & Specialty', anchor: [-0.7, 4.9, 0.6] },
-  { id: 'interior', name: 'Interior Finish', anchor: [-1.2, 2.2, 0.4] },
-  { id: 'restoration', name: 'Restoration & Other', anchor: [-1.5, 3.0, -1.0] }
+  { id: 'interior', name: 'Interior Finish', anchor: [0.4, 2.9, 2.6] },
+  { id: 'restoration', name: 'Restoration & Other', anchor: [-3.4, 2.4, -0.6] }
 ]
 
 // Push the camera outward from the house center, through the anchor, lifted a touch.
@@ -136,5 +136,39 @@ export const systems = [
   stub({ id: 'pool-spa', zone: 'yard', displayCluster: 'yard', name: 'Pool & Spa', position: [3.9, 0.4, 0.6], normal: [1, 0.4, 0.2], tam: 15, frag: 4, roll: 3 }),
 
   // Zone D: Energy & specialty
-  stub({ id: 'solar', zone: 'energy', displayCluster: 'energy', name: 'Solar & Battery Storage', position: [-0.6, 4.3, 0.6], normal: [0, 0.9, 0.4], tam: 25, frag: 4, roll: 2 })
+  stub({ id: 'solar', zone: 'energy', displayCluster: 'energy', name: 'Solar & Battery Storage', position: [-0.6, 4.3, 0.6], normal: [0, 0.9, 0.4], tam: 25, frag: 4, roll: 2 }),
+
+  // ---- Expanded taxonomy (Zones A-F). image:null until per-system renders exist. ----
+
+  // Zone A: Envelope & structure (more)
+  stub({ id: 'siding', zone: 'envelope', displayCluster: 'envelope', name: 'Siding & Cladding', position: [-2.6, 2.2, 2.55], normal: [0, 0.1, 1], tam: 20, frag: 4, roll: 2, image: null }),
+  stub({ id: 'windows', zone: 'envelope', displayCluster: 'envelope', name: 'Windows', position: [1.4, 2.9, 2.55], normal: [0, 0, 1], tam: 23, frag: 4, roll: 3, image: null }),
+  stub({ id: 'exterior-doors', zone: 'envelope', displayCluster: 'envelope', name: 'Exterior Doors', position: [-0.7, 1.2, 2.7], normal: [0, 0, 1], tam: 9, frag: 4, roll: 2, image: null }),
+  stub({ id: 'decks-patios', zone: 'envelope', displayCluster: 'envelope', name: 'Decks & Patios', position: [-1.5, 0.6, -2.8], normal: [-0.2, 0.3, -1], tam: 12, frag: 5, roll: 2, image: null }),
+  stub({ id: 'driveways-hardscape', zone: 'envelope', displayCluster: 'envelope', name: 'Driveways & Hardscape', position: [1.6, 0.2, 4.0], normal: [0, 0.4, 1], tam: 16, frag: 5, roll: 2, image: null }),
+
+  // Zone B: Core mechanical (more)
+  stub({ id: 'insulation', zone: 'core-mechanical', displayCluster: 'mechanical', name: 'Insulation', position: [0, 4.7, 0.5], normal: [0, 1, 0.3], tam: 11, frag: 4, roll: 3, image: null }),
+  stub({ id: 'low-voltage-security', zone: 'core-mechanical', displayCluster: 'mechanical', name: 'Low-Voltage & Security', position: [0.6, 3.1, 2.55], normal: [0, 0.2, 1], tam: 18, frag: 4, roll: 3, image: null }),
+  stub({ id: 'generators', zone: 'core-mechanical', displayCluster: 'mechanical', name: 'Generators & Backup', position: [-3.6, 0.7, 0.3], normal: [-1, 0.2, 0], tam: 7, frag: 4, roll: 3, image: null }),
+
+  // Zone C: Yard & exterior (more)
+  stub({ id: 'irrigation', zone: 'yard', displayCluster: 'yard', name: 'Irrigation & Sprinklers', position: [-2.2, 0.15, 4.0], normal: [0, 1, 0.2], tam: 9, frag: 5, roll: 2, image: null }),
+  stub({ id: 'outdoor-lighting', zone: 'yard', displayCluster: 'yard', name: 'Outdoor Lighting', position: [-3.2, 0.4, 3.0], normal: [-0.3, 0.4, 1], tam: 5, frag: 5, roll: 2, image: null }),
+
+  // Zone D: Energy & specialty (more)
+  stub({ id: 'ev-charging', zone: 'energy', displayCluster: 'energy', name: 'EV Charging', position: [2.6, 0.8, 3.0], normal: [0.3, 0.1, 1], tam: 4, frag: 4, roll: 3, image: null }),
+
+  // Zone E: Interior finish (renovation-heavy)
+  stub({ id: 'kitchen-remodel', zone: 'interior', displayCluster: 'interior', name: 'Kitchen Remodel', position: [1.6, 2.0, 2.55], normal: [0, 0, 1], tam: 60, frag: 5, roll: 2, image: null }),
+  stub({ id: 'bath-remodel', zone: 'interior', displayCluster: 'interior', name: 'Bath Remodel', position: [1.1, 3.9, 2.55], normal: [0, 0, 1], tam: 40, frag: 5, roll: 2, image: null }),
+  stub({ id: 'flooring', zone: 'interior', displayCluster: 'interior', name: 'Flooring', position: [-2.0, 1.0, 2.55], normal: [0, 0, 1], tam: 30, frag: 5, roll: 2, image: null }),
+  stub({ id: 'painting', zone: 'interior', displayCluster: 'interior', name: 'Painting', position: [3.2, 2.6, 0.5], normal: [1, 0.1, 0], tam: 30, frag: 5, roll: 2, image: null }),
+  stub({ id: 'cabinetry-countertops', zone: 'interior', displayCluster: 'interior', name: 'Cabinetry & Countertops', position: [-1.9, 3.0, 2.55], normal: [0, 0, 1], tam: 25, frag: 5, roll: 2, image: null }),
+  stub({ id: 'closets-organization', zone: 'interior', displayCluster: 'interior', name: 'Closets & Organization', position: [-1.3, 3.9, 2.55], normal: [0, 0, 1], tam: 6, frag: 5, roll: 2, image: null }),
+
+  // Zone F: Restoration & other
+  stub({ id: 'restoration', zone: 'restoration', displayCluster: 'restoration', name: 'Water / Fire / Mold Restoration', position: [-3.5, 2.2, -1.0], normal: [-1, 0.2, -0.2], tam: 50, frag: 4, roll: 4, image: null }),
+  stub({ id: 'chimney-fireplace', zone: 'restoration', displayCluster: 'restoration', name: 'Chimney & Fireplace', position: [1.3, 5.1, -0.8], normal: [0.3, 0.9, -0.3], tam: 6, frag: 5, roll: 2, image: null }),
+  stub({ id: 'septic', zone: 'restoration', displayCluster: 'restoration', name: 'Septic', position: [-2.5, 0.12, -2.9], normal: [0, 1, -0.3], tam: 5, frag: 5, roll: 2, image: null })
 ]
