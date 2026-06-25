@@ -76,6 +76,37 @@
   background: linear-gradient(90deg, var(--tier-cool), var(--tier-warm), var(--tier-hot));
 }
 
+.dock-divider {
+  width: 1px;
+  align-self: stretch;
+  margin: 2px 2px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.dock-zoom {
+  display: flex;
+  gap: 5px;
+}
+.zoom-btn {
+  font-family: var(--sans);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--paper);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+.zoom-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
 /* Popover */
 .pop {
   position: absolute;

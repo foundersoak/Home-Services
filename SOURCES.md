@@ -156,6 +156,19 @@ Researched and adversarially verified, grouped by system. Every displayed figure
 - **PE Professional** - Trivest Acquires Yummy to Begin Pool Services Consolidation (June 2024 majority recap; Trivest Partners; Yummy Pools platform) - VERIFIED (also BusinessWire / Founders Advisors) (trade-press) <https://peprofessional.com/2024/06/trivest-acquires-yummy-to-begin-pool-services-consolidation/> (accessed 2026-06-22)
 - **Apax Partners** - Authority Brands acquires America's Swimming Pool Company (Apax-backed Authority Brands; ASP largest US pool service franchise) - VERIFIED, but note acquisition dates to Oct 2018, not 2024 (trade-press) <https://www.apax.com/news-views/authority-brands-acquires-america-s-swimming-pool-company/> (accessed 2026-06-22)
 
+## Pet Services  (complete, confidence: medium)
+
+- **IBISWorld** - Dog Walking Services in the US - Market Size Statistics (2025) (market-research) <https://www.ibisworld.com/united-states/market-size/dog-walking-services/4350/> (accessed 2026-06-24)
+- **IBISWorld** - Dog Walking Services in the US - Industry Analysis (fragmentation, business counts) (market-research) <https://www.ibisworld.com/united-states/industry/dog-walking-services/4350/> (accessed 2026-06-24)
+- **Grand View Research** - Pet Sitting Market Size, Share and Trends Report (global $2.69B 2024, US 27.1% share) (market-research) <https://www.grandviewresearch.com/industry-analysis/pet-sitting-market> (accessed 2026-06-24)
+- **Dataintelo** - Pet Waste Pickup Service Market Research Report (global pet waste removal market) (market-research) <https://dataintelo.com/report/global-pet-waste-removal-services-market> (accessed 2026-06-24)
+- **Verified Market Research** - Pet Waste Removal Services Market Size, Scope and Forecast (market-research) <https://www.verifiedmarketresearch.com/product/pet-waste-removal-services-market/> (accessed 2026-06-24)
+- **Blackstone** - Blackstone Completes Acquisition of Rover (~$2.3B; Rover 2023 revenue context) (press-release) <https://www.blackstone.com/news/press/blackstone-completes-acquisition-of-rover/> (accessed 2026-06-24)
+- **GlobeNewswire (Wag! Group Co.)** - Wag! Reports Fourth Quarter and Full Year 2024 Results (filing) <https://www.globenewswire.com/news-release/2025/03/24/3047690/0/en/Wag-Reports-Fourth-Quarter-and-Full-Year-2024-Results.html> (accessed 2026-06-24)
+- **PR Newswire (Authority Brands)** - Authority Brands Acquires DoodyCalls (press-release) <https://www.prnewswire.com/news-releases/authority-brands-acquires-doodycalls-301231568.html> (accessed 2026-06-24)
+- **EIN Presswire (Scoop Soldiers)** - Scoop Soldiers Expands into Cleveland, Ohio Through Acquisition of Dog Waste Management (press-release) <https://www.einpresswire.com/article/888044630/scoop-soldiers-expands-into-cleveland-ohio-through-acquisition-of-dog-waste-management> (accessed 2026-06-24)
+- **Pet Butler Franchise** - Pet Care Franchise Opportunities With Pet Butler (ownership: Spring-Green Enterprises since 2017) (trade-press) <https://petbutlerfranchise.com/> (accessed 2026-06-24)
+
 ## Solar & Battery Storage  (complete, confidence: medium)
 
 - **SEIA / Wood Mackenzie** - US Solar Market Insight 2024 Year in Review (Executive Summary) - residential ~4.7 GWdc (trade-association) <https://seia.org/research-resources/solar-market-insight-report-2024-year-in-review/> (accessed 2026-06-22)
@@ -365,13 +378,15 @@ Researched and adversarially verified, grouped by system. Every displayed figure
 
 ## Water / Fire / Mold Restoration  (complete, confidence: medium)
 
-- **IBISWorld** - Damage Restoration Services in the US - Market Size (2025) & Number of Businesses (market-research) <https://www.ibisworld.com/united-states/market-size/damage-restoration-services/6278/> (accessed 2026-06-24)
-- **Sherwood News (Robinhood Media)** - Natural disasters are making a mess of America. Private equity wants the cleanup cash (trade-press) <https://sherwood.news/business/natural-disaster-clean-up-business-private-equity/> (accessed 2026-06-24)
-- **Franchise Times** - City Wide, CRDN Led Cleaning and Restoration Sales Growth in Top 400 (trade-press) <https://www.franchisetimes.com/franchise_news/city-wide-crdn-led-cleaning-and-restoration-sales-growth-in-top-400/article_1d08f9df-d17d-4fb4-9242-700e755592bf.html> (accessed 2026-06-24)
-- **American Securities** - BELFOR - Company (American Securities portfolio) (trade-press) <https://www.american-securities.com/en/companies/belfor> (accessed 2026-06-24)
-- **ATI Restoration** - ATI Announces Investment from TSG Consumer Partners (trade-press) <https://atirestoration.com/press-releases/ati-announces-investment-from-tsg-consumer-partners/> (accessed 2026-06-24)
-- **Private Equity Stakeholder Project** - Disaster recovery industry dominated by private equity (trade-press) <https://pestakeholder.org/news/disaster-recovery-industry-dominated-by-private-equity/> (accessed 2026-06-24)
-- **Orange County Business Journal** - Orange County's ATI Restoration is a Major Player in Disaster Response (trade-press) <https://www.ocbj.com/real-estate/orange-countys-ati-restoration-is-a-major-player-in-disaster-response/> (accessed 2026-06-24)
+- **IBISWorld** - Damage Restoration Services in the US - Market Size (2025) (market-research) <https://www.ibisworld.com/united-states/market-size/damage-restoration-services/6278/> (accessed 2026-06-24)
+- **Mordor Intelligence** - Disaster Restoration Services Market Size & Growth (to 2031); North America ~40.6% share (market-research) <https://www.mordorintelligence.com/industry-reports/disaster-restoration-services-market> (accessed 2026-06-24)
+- **L.E.K. Consulting** - Claim to Know the Restoration and Remediation Industry? Not So Fast (trade-press) <https://www.lek.com/insights/ind/us/ei/claim-know-restoration-and-remediation-industry-not-so-fast> (accessed 2026-06-24)
+- **1-800 Water Damage (franchise research summary citing industry data)** - How Big Is the Restoration Industry (~$210B total; residential ~55%) (trade-press) <https://1800waterdamagefranchise.com/research/how-big-is-the-restoration-industry/> (accessed 2026-06-24)
+- **Franchise Times** - City Wide, CRDN Led Cleaning and Restoration Sales Growth in Top 400 (Servpro $4.5B 2024 system-wide sales) (trade-press) <https://www.franchisetimes.com/franchise_news/city-wide-crdn-led-cleaning-and-restoration-sales-growth-in-top-400/article_1d08f9df-d17d-4fb4-9242-700e755592bf.html> (accessed 2026-06-24)
+- **Qualified Remodeler (Top 500 Insurance Restoration) / BELFOR** - 2025 Top 500 Insurance Restoration (BELFOR ~$2.5 to 2.7B global; American Securities ownership; Yellen leadership) (trade-press) <https://www.belfor.com/us/wp-content/uploads/sites/2/2025/08/Qualified-Remodeler-2025-Top-500-Insurance-Restoration-Value-in-Service-Sheldon-Yellen-August-14-2025.pdf> (accessed 2026-06-24)
+- **FirstService Corporation / GlobeNewswire** - FirstService Adds Restoration Tuck-Under Acquisitions (First Onsite; FirstService ~$4.3B corp revenue 2024) (filing) <https://www.globenewswire.com/news-release/2024/01/10/2807019/36351/en/FirstService-Adds-Restoration-Tuck-Under-Acquisitions.html> (accessed 2026-06-24)
+- **ATI Restoration / Business Wire** - ATI Announces Investment from TSG Consumer Partners; largest family-owned US disaster recovery provider (trade-press) <https://atirestoration.com/press-releases/ati-announces-investment-from-tsg-consumer-partners/> (accessed 2026-06-24)
+- **Kohlberg & Company** - Partners Group and Kohlberg & Company Acquire BluSky, a Leading US Provider of Commercial Restoration Services (press-release) <https://www.kohlberg.com/partners-group-and-kohlberg-company-acquire-blusky-a-leading-us-provider-of-commercial-restoration-services/> (accessed 2026-06-24)
 
 ## Chimney & Fireplace  (complete, confidence: medium)
 

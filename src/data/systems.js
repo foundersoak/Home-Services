@@ -34,7 +34,7 @@ export const CLUSTERS = [
   { id: 'envelope', name: 'Envelope & Structure', anchor: [0, 5.2, 0.2] },
   { id: 'mechanical', name: 'Core Mechanical', anchor: [3.6, 2.4, 0.4] },
   { id: 'yard', name: 'Yard & Exterior', anchor: [3.9, 1.2, 2.2] },
-  { id: 'energy', name: 'Energy & Specialty', anchor: [-0.7, 4.9, 0.6] },
+  { id: 'energy', name: 'Energy & Specialty', anchor: [2.3, 4.8, 0.4] },
   { id: 'interior', name: 'Interior Finish', anchor: [0.4, 2.9, 2.6] },
   { id: 'restoration', name: 'Restoration & Other', anchor: [-3.4, 2.4, -0.6] }
 ]
@@ -130,10 +130,11 @@ export const systems = [
 
   // Zone C: Yard & exterior
   stub({ id: 'landscaping', zone: 'yard', displayCluster: 'yard', name: 'Landscaping & Lawn Care', position: [-1.2, 0.3, 4.0], normal: [0, 0.4, 1], tam: 153, frag: 5, roll: 3 }),
-  stub({ id: 'tree-arbor', zone: 'yard', displayCluster: 'yard', name: 'Tree & Arbor', position: [4.4, 2.4, -2.6], normal: [1, 0.3, -0.6], tam: 31, frag: 5, roll: 3 }),
+  stub({ id: 'tree-arbor', zone: 'yard', displayCluster: 'yard', name: 'Tree & Arbor', position: [-3.4, 3.0, 4.9], normal: [-0.2, 0.35, 1], tam: 31, frag: 5, roll: 3 }),
   stub({ id: 'fencing', zone: 'yard', displayCluster: 'yard', name: 'Fencing', position: [-3.6, 0.6, 3.2], normal: [-0.4, 0.2, 1], tam: 9, frag: 5, roll: 2 }),
   stub({ id: 'pest-control', zone: 'yard', displayCluster: 'yard', name: 'Pest Control', position: [-3.5, 0.5, -0.5], normal: [-1, 0.2, 0], tam: 18, frag: 3, roll: 5 }),
-  stub({ id: 'pool-spa', zone: 'yard', displayCluster: 'yard', name: 'Pool & Spa', position: [3.9, 0.4, 0.6], normal: [1, 0.4, 0.2], tam: 15, frag: 4, roll: 3 }),
+  stub({ id: 'pool-spa', zone: 'yard', displayCluster: 'yard', name: 'Pool & Spa', position: [5.0, 0.78, 0.4], normal: [1, 0.3, 0.2], tam: 15, frag: 4, roll: 3 }),
+  stub({ id: 'pet-services', zone: 'yard', displayCluster: 'yard', name: 'Pet Services', position: [0.4, 0.25, 4.2], normal: [0, 0.5, 1], tam: 2, frag: 5, roll: 3 }),
 
   // Zone D: Energy & specialty
   stub({ id: 'solar', zone: 'energy', displayCluster: 'energy', name: 'Solar & Battery Storage', position: [-0.6, 4.3, 0.6], normal: [0, 0.9, 0.4], tam: 25, frag: 4, roll: 2 }),

@@ -24,8 +24,16 @@ export function createControls({ container, systems, clusters, getScores, initia
     </button>
     <button id="weights-btn" class="dock-btn" type="button" aria-expanded="false">Weights</button>
     <button id="list-btn" class="dock-btn" type="button" aria-expanded="false">Ranked list</button>
+    <span class="dock-divider"></span>
+    <div class="dock-zoom">
+      <button id="zoom-out" class="zoom-btn" type="button" aria-label="Zoom out">&minus;</button>
+      <button id="zoom-in" class="zoom-btn" type="button" aria-label="Zoom in">+</button>
+    </div>
   `
   container.appendChild(dock)
+
+  dock.querySelector('#zoom-in').addEventListener('click', () => handlers.onZoom('in'))
+  dock.querySelector('#zoom-out').addEventListener('click', () => handlers.onZoom('out'))
 
   // ---- weights popover ----
   const weights = { ...initialWeights }
@@ -34,23 +42,22 @@ export function createControls({ container, systems, clusters, getScores, initia
   pop.className = 'pop is-hidden'
   pop.innerHTML = `
     <div class="pop-title">Opportunity weights</div>
-    <p class="pop-sub">Hottest = large TAM, high fragmentation, moderate roll-up. Weights normalize to 100%.</p>
+    <p class="pop-sub">Hottest = large TAM, high fragmentation, moderate roll-up. Each slider moves on its own; the mix is normalized when scoring.</p>
     ${weightRow('tam', 'Market size (TAM)', weights.tam)}
     ${weightRow('frag', 'Fragmentation', weights.frag)}
     ${weightRow('roll', 'Roll-up intensity', weights.roll)}
   `
   container.appendChild(pop)
 
+  // Labels show each slider's OWN raw setting (0-100), so moving one never shifts the others'
+  // displayed numbers. The values are normalized to sum-to-1 only inside readWeights for scoring.
   function weightRow(key, label, val) {
     return `
       <label class="weight-row">
         <span class="weight-label">${label}</span>
         <input type="range" min="0" max="100" value="${Math.round(val * 100)}" data-key="${key}" class="weight-slider" />
-        <span class="weight-val" data-val="${key}">${pct(val)}</span>
+        <span class="weight-val" data-val="${key}">${Math.round(val * 100)}</span>
       </label>`
-  }
-  function pct(v) {
-    return Math.round(v * 100) + '%'
   }
 
   function readWeights() {
@@ -62,17 +69,14 @@ export function createControls({ container, systems, clusters, getScores, initia
       a += Number(s.value)
     })
     const sum = a || 1
-    const w = { tam: raw.tam / sum, frag: raw.frag / sum, roll: raw.roll / sum }
-    pop.querySelectorAll('.weight-val').forEach((el) => {
-      el.textContent = pct(w[el.dataset.val])
-    })
-    return w
+    return { tam: raw.tam / sum, frag: raw.frag / sum, roll: raw.roll / sum }
   }
 
   pop.querySelectorAll('.weight-slider').forEach((s) => {
     s.addEventListener('input', () => {
-      const w = readWeights()
-      handlers.onWeights(w)
+      const lab = pop.querySelector('.weight-val[data-val="' + s.dataset.key + '"]')
+      if (lab) lab.textContent = s.value
+      handlers.onWeights(readWeights())
     })
   })
 
@@ -120,11 +124,19 @@ export function createControls({ container, systems, clusters, getScores, initia
   function renderList() {
     const scores = getScores()
     const rows = systems
-      .map((s) => ({ s, v: valOf(s, sortKey, scores), tier: scores.get(s.id) ? scores.get(s.id).tier : null }))
+      .map((s) => ({
+        s,
+        v: valOf(s, sortKey, scores),
+        tam: s.tam && s.tam.total ? s.tam.total.value : null,
+        tier: scores.get(s.id) ? scores.get(s.id).tier : null
+      }))
       .sort((a, b) => {
         if (a.v == null) return 1
         if (b.v == null) return -1
-        return b.v - a.v
+        if (b.v !== a.v) return b.v - a.v
+        // Tie-break by TAM so a single discrete component at full weight (e.g. 100% roll-up,
+        // whose 1-5 score yields only a few distinct values) still orders the list visibly.
+        return (b.tam == null ? -Infinity : b.tam) - (a.tam == null ? -Infinity : a.tam)
       })
     const body = listPanel.querySelector('.rl-body')
     body.innerHTML = rows

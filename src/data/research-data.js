@@ -5372,26 +5372,26 @@ export const RESEARCH = {
     "confidence": "medium",
     "tam": {
       "total": {
-        "value": 7.2,
+        "value": 115,
         "unit": "billion",
-        "source": "src-1"
+        "source": "src-3"
       },
       "year": 2025,
       "newConstruction": {
         "value": 0,
         "unit": "billion",
         "modeledEstimate": true,
-        "assumption": "Restoration of water/fire/mold damage is by definition repair/remediation of EXISTING structures; there is no new-construction component. Modeled at ~$0 / negligible.",
+        "assumption": "Restoration is inherently a repair/remediation/reconstruction service triggered by water, fire, smoke, mold, or storm damage to existing structures. There is no meaningful new-construction component; set to ~0.",
         "source": null
       },
       "renovationRepair": {
-        "value": 7.2,
+        "value": 115,
         "unit": "billion",
         "modeledEstimate": true,
-        "assumption": "Entire restoration TAM is renovation/repair/replacement work (mitigation, remediation, and reconstruction of damaged existing residential and nonresidential property). Residential-only portion is a subset but not separately reported by IBISWorld; the $7.2B is the full IBISWorld 'Damage Restoration Services' (NAICS-based) line, residential + nonresidential.",
-        "source": "src-1"
+        "assumption": "Essentially the entire restoration TAM is repair/remediation/reconstruction of existing property. Modeled as residential ~55% of the widely-cited ~$210B total US property restoration and remediation market (~$115B residential). Insurance-funded, non-discretionary demand.",
+        "source": "src-3"
       },
-      "methodology": "Top-down, anchored to IBISWorld's NAICS-based 'Damage Restoration Services in the US' market-size line ($7.2B 2025, +1.9% YoY, 4.0% CAGR 2020-25; 62,582 establishments, +4.3% YoY). VERIFIED against IBISWorld pages. Independently corroborated by Franchise Times Top 400, which puts franchised restoration concepts collectively at ~$7.3B systemwide sales in 2024 (Servpro $4.50B, Paul Davis $1.49B, PuroClean $478M, Rainbow $343M, CRDN $234M) - closely matching IBISWorld. NOTE on scope: broader trade/M&A press (Sherwood News) cites a ~$70B (global remediation forecast) and up to ~$200B (US incl. catastrophe reconstruction/GC rebuild revenue) figure that bundles full reconstruction; on that wider definition the true total US market is materially larger. The residential-only TAM is not separately published; restoration is roughly half residential / half commercial across the major players, implying a residential TAM on the order of ~$3.5-4B on the narrow IBISWorld definition. Split modeled as ~100% renovation/repair because restoration is inherently repair of existing structures.",
+      "methodology": "The prior ~$7.2B figure was IBISWorld's narrow 'Damage Restoration Services' US category (src-1: $7.1B in 2024, $7.2B in 2025), a thin contractor sub-segment that is logically inconsistent with top players (Servpro $4.5B system-wide franchise sales, BELFOR ~$2.5 to 2.7B global) operating in a market also described as fragmented. Reconciled by using the broader US property restoration and remediation market. Triangulation across scope definitions: (a) narrow mitigation contracting ~$7.2B US (IBISWorld, src-1); (b) global 'disaster restoration services' ~$43B in 2025 with North America ~40.6%, so ~$17.4B NA (Mordor, src-2); (c) full US property restoration and remediation including reconstruction ~$210B, residential ~55% (src-3/src-4). TAM set to ~$115B, the residential ~55% slice of the broad ~$210B US total, which is internally consistent with system-wide and global player revenues and high fragmentation (top-3 US-residential combined revenue is a low-single-digit % of TAM). Value carries medium confidence given the wide spread between scope definitions.",
       "confidence": "medium"
     },
     "topPlayers": [
@@ -5400,171 +5400,401 @@ export const RESEARCH = {
         "approxRevenue": {
           "value": 4.5,
           "unit": "billion",
-          "source": "src-3"
-        },
-        "ownership": "PE-backed",
-        "sponsor": "Blackstone",
-        "note": "Largest US restoration brand; ~2,380 franchised locations (US/Canada). Heavily residential + commercial water/fire/mold mitigation. $4.50B systemwide sales 2024 (down 1.4% on lighter catastrophe year) per Franchise Times Top 400. Blackstone took a majority stake in March 2019 (recapitalization, ~$1B incl. debt; Isaacson family retained significant stake).",
-        "website": "https://www.servpro.com",
-        "source": "src-3"
-      },
-      {
-        "name": "BELFOR (Holdings)",
-        "approxRevenue": {
-          "value": 2.5,
-          "unit": "billion",
           "source": "src-5"
         },
-        "ownership": "PE-backed",
-        "sponsor": "American Securities",
-        "note": "Global leader in damage recovery; operations in 34 countries, 10,000+ employees. Serves individual homeowners through large commercial losses. ~$2.5B revenue (global Holdings, ~$2.49B 2023 per aggregators; Sherwood News cites $1.95B by 2018). NOTE: figure is global BELFOR Holdings, not US-only. Acquired by American Securities April 2019; aggressive add-on acquirer (half-dozen-plus large firms).",
-        "website": "https://www.belfor.com",
+        "ownership": "franchise",
+        "sponsor": "Blackstone (majority recapitalization, 2019; Isaacson family retains stake)",
+        "note": "Revenue is 2024 SYSTEM-WIDE franchise sales across ~2,300+ independently owned and operated locations (global, but overwhelmingly US residential + commercial), NOT corporate revenue and NOT US-residential-only. Largest restoration franchise.",
+        "website": "https://www.servpro.com",
         "source": "src-5"
+      },
+      {
+        "name": "BELFOR Holdings",
+        "approxRevenue": {
+          "value": 2.7,
+          "unit": "billion",
+          "source": "src-6"
+        },
+        "ownership": "PE-backed",
+        "sponsor": "American Securities (acquired 2019); Yellen family leadership (CEO Sheldon Yellen)",
+        "note": "Revenue is GLOBAL company-wide (~34 countries, 14,000+ employees), spanning commercial + residential. US-residential share is a fraction of this. Largest single-company (non-franchise) restoration operator.",
+        "website": "https://www.belfor.com",
+        "source": "src-6"
+      },
+      {
+        "name": "First Onsite Property Restoration",
+        "approxRevenue": {
+          "value": 1.5,
+          "unit": "billion",
+          "source": "src-7"
+        },
+        "ownership": "public",
+        "sponsor": "FirstService Corporation (NASDAQ/TSX: FSV; ~$4.3B total corp revenue 2024)",
+        "note": "Revenue is approximate/estimated North America (US + Canada) restoration-segment scale, primarily COMMERCIAL/institutional. US-residential is a minority of this. Acquisitive tuck-under platform.",
+        "website": "https://firstonsite.com",
+        "source": "src-7"
       },
       {
         "name": "ATI Restoration",
         "approxRevenue": {
-          "value": 0.8,
+          "value": null,
           "unit": "billion",
           "source": "src-8"
         },
         "ownership": "PE-backed",
-        "sponsor": "TSG Consumer Partners",
-        "note": "Nation's largest family-founded disaster-recovery provider; residential + commercial. CORRECTED: ~$800M+ revenue, ~70 offices nationwide, 2,600+ direct employees per Orange County Business Journal (the prior $1.65B / 26-branch figures came only from low-trust data aggregators and were rejected). On 2024 Inc. 5000 with 97% three-year growth. TSG Consumer Partners invested Aug 2020; acquired 15 companies Nov 2020-Apr 2024. (Paul Davis Restoration, $1.49B systemwide 2024, is a comparably-sized franchised peer.)",
+        "sponsor": "TSG Consumer Partners (invested 2020); Moore family retains ownership",
+        "note": "Largest family-owned US disaster recovery provider; ~2,600 employees; 15+ acquisitions Nov 2020 to Apr 2024. Disclosed revenue not available, value nulled. Commercial + residential.",
         "website": "https://atirestoration.com",
         "source": "src-8"
+      },
+      {
+        "name": "BluSky Restoration Contractors",
+        "approxRevenue": {
+          "value": null,
+          "unit": "billion",
+          "source": "src-9"
+        },
+        "ownership": "PE-backed",
+        "sponsor": "Partners Group and Kohlberg & Company (acquired 2021)",
+        "note": "Leading US provider, but primarily COMMERCIAL/industrial/healthcare/multifamily, limited US-residential. Disclosed revenue not available, value nulled.",
+        "website": "https://www.goblusky.com",
+        "source": "src-9"
       }
     ],
     "rollups": [
       {
-        "platform": "Servpro",
-        "sponsor": "Blackstone",
-        "thesis": "Scale the dominant franchised restoration brand; layer corporate-owned add-ons onto a ~2,380-unit national network.",
-        "notableAddOns": "Majority recapitalization by Blackstone (March 2019); franchise network expansion.",
-        "link": "https://www.servpro.com",
+        "platform": "BELFOR Holdings",
+        "sponsor": "American Securities",
+        "thesis": "National and global buy-and-build consolidation of the fragmented restoration market; largest single-company operator scaling commercial + residential coverage.",
+        "notableAddOns": "10+ acquisitions adding 30+ locations across 2023-2024",
+        "link": "https://www.belfor.com/us/en/about/",
         "linkType": "company",
-        "source": "src-2"
+        "source": "src-6"
       },
       {
-        "platform": "BELFOR",
-        "sponsor": "American Securities",
-        "thesis": "Build the global market leader in property damage recovery via large-firm consolidation across residential and commercial.",
-        "notableAddOns": "Acquired half-dozen-plus large restoration firms since 2018; operations in 34 countries.",
-        "link": "https://www.american-securities.com/en/companies/belfor",
-        "linkType": "company",
-        "source": "src-5"
+        "platform": "First Onsite Property Restoration",
+        "sponsor": "FirstService Corporation (public)",
+        "thesis": "Public-company tuck-under roll-up building the #2 independent North American commercial restoration platform via geographic in-fill acquisitions.",
+        "notableAddOns": "DryPatrol (Dayton OH) and All Restoration Solutions (Atlanta GA) acquired 2024",
+        "link": "https://www.globenewswire.com/news-release/2024/01/10/2807019/36351/en/FirstService-Adds-Restoration-Tuck-Under-Acquisitions.html",
+        "linkType": "press-release",
+        "source": "src-7"
       },
       {
         "platform": "ATI Restoration",
         "sponsor": "TSG Consumer Partners",
-        "thesis": "National family-founded restoration platform pursuing residential/commercial add-ons.",
-        "notableAddOns": "15 acquisitions Nov 2020-Apr 2024.",
+        "thesis": "PE-backed national roll-up of regional disaster-recovery firms while retaining founding-family ownership.",
+        "notableAddOns": "15 companies acquired Nov 2020 to Apr 2024",
         "link": "https://atirestoration.com/press-releases/ati-announces-investment-from-tsg-consumer-partners/",
         "linkType": "press-release",
-        "source": "src-6"
+        "source": "src-8"
       },
       {
         "platform": "BluSky Restoration Contractors",
-        "sponsor": "Partners Group & Kohlberg & Company",
-        "thesis": "Roll up regional restoration/reconstruction firms into a multi-state platform.",
-        "notableAddOns": "10 acquisitions Dec 2021-Dec 2023.",
-        "link": "https://pestakeholder.org/news/disaster-recovery-industry-dominated-by-private-equity/",
+        "sponsor": "Partners Group + Kohlberg & Company",
+        "thesis": "PE roll-up of commercial/industrial/healthcare/multifamily restoration providers into a leading US commercial platform.",
+        "notableAddOns": "Acquired by Partners Group and Kohlberg (2021); active add-on program",
+        "link": "https://www.kohlberg.com/partners-group-and-kohlberg-company-acquire-blusky-a-leading-us-provider-of-commercial-restoration-services/",
         "linkType": "press-release",
+        "source": "src-9"
+      }
+    ],
+    "fragmentation": {
+      "score": 5,
+      "rationale": "Highly fragmented. On the reconciled ~$115B US-residential TAM, the three largest restoration brands' US-residential revenue is a low-single-digit % of the total, and even Servpro's entire $4.5B global system-wide franchise sales is under 4% of TAM. Even on the narrower ~$17.4B North America 'disaster restoration services' denominator, no single firm exceeds ~15% and the long tail of thousands of small regional and local contractors dominates. This resolves the original inconsistency (top-3 appeared to exceed a too-narrow $7.2B TAM): the players' revenues are system-wide or global, and the true addressable TAM is far larger.",
+      "source": "src-3"
+    },
+    "rollupIntensity": {
+      "score": 4,
+      "rationale": "Active, well-funded PE consolidation: Blackstone (Servpro), American Securities (BELFOR), TSG Consumer (ATI), Partners Group + Kohlberg (BluSky), and public FirstService (First Onsite) are all running buy-and-build programs, with dozens of add-ons annually. Insurance-funded, non-discretionary, recession-resilient demand makes it a favored roll-up sector, but extreme fragmentation means consolidation is still early, so intensity is high rather than maxed."
+    },
+    "sources": [
+      {
+        "id": "src-1",
+        "publisher": "IBISWorld",
+        "title": "Damage Restoration Services in the US - Market Size (2025)",
+        "url": "https://www.ibisworld.com/united-states/market-size/damage-restoration-services/6278/",
+        "dateAccessed": "2026-06-24",
+        "type": "market-research"
+      },
+      {
+        "id": "src-2",
+        "publisher": "Mordor Intelligence",
+        "title": "Disaster Restoration Services Market Size & Growth (to 2031); North America ~40.6% share",
+        "url": "https://www.mordorintelligence.com/industry-reports/disaster-restoration-services-market",
+        "dateAccessed": "2026-06-24",
+        "type": "market-research"
+      },
+      {
+        "id": "src-3",
+        "publisher": "L.E.K. Consulting",
+        "title": "Claim to Know the Restoration and Remediation Industry? Not So Fast",
+        "url": "https://www.lek.com/insights/ind/us/ei/claim-know-restoration-and-remediation-industry-not-so-fast",
+        "dateAccessed": "2026-06-24",
+        "type": "trade-press"
+      },
+      {
+        "id": "src-4",
+        "publisher": "1-800 Water Damage (franchise research summary citing industry data)",
+        "title": "How Big Is the Restoration Industry (~$210B total; residential ~55%)",
+        "url": "https://1800waterdamagefranchise.com/research/how-big-is-the-restoration-industry/",
+        "dateAccessed": "2026-06-24",
+        "type": "trade-press"
+      },
+      {
+        "id": "src-5",
+        "publisher": "Franchise Times",
+        "title": "City Wide, CRDN Led Cleaning and Restoration Sales Growth in Top 400 (Servpro $4.5B 2024 system-wide sales)",
+        "url": "https://www.franchisetimes.com/franchise_news/city-wide-crdn-led-cleaning-and-restoration-sales-growth-in-top-400/article_1d08f9df-d17d-4fb4-9242-700e755592bf.html",
+        "dateAccessed": "2026-06-24",
+        "type": "trade-press"
+      },
+      {
+        "id": "src-6",
+        "publisher": "Qualified Remodeler (Top 500 Insurance Restoration) / BELFOR",
+        "title": "2025 Top 500 Insurance Restoration (BELFOR ~$2.5 to 2.7B global; American Securities ownership; Yellen leadership)",
+        "url": "https://www.belfor.com/us/wp-content/uploads/sites/2/2025/08/Qualified-Remodeler-2025-Top-500-Insurance-Restoration-Value-in-Service-Sheldon-Yellen-August-14-2025.pdf",
+        "dateAccessed": "2026-06-24",
+        "type": "trade-press"
+      },
+      {
+        "id": "src-7",
+        "publisher": "FirstService Corporation / GlobeNewswire",
+        "title": "FirstService Adds Restoration Tuck-Under Acquisitions (First Onsite; FirstService ~$4.3B corp revenue 2024)",
+        "url": "https://www.globenewswire.com/news-release/2024/01/10/2807019/36351/en/FirstService-Adds-Restoration-Tuck-Under-Acquisitions.html",
+        "dateAccessed": "2026-06-24",
+        "type": "filing"
+      },
+      {
+        "id": "src-8",
+        "publisher": "ATI Restoration / Business Wire",
+        "title": "ATI Announces Investment from TSG Consumer Partners; largest family-owned US disaster recovery provider",
+        "url": "https://atirestoration.com/press-releases/ati-announces-investment-from-tsg-consumer-partners/",
+        "dateAccessed": "2026-06-24",
+        "type": "trade-press"
+      },
+      {
+        "id": "src-9",
+        "publisher": "Kohlberg & Company",
+        "title": "Partners Group and Kohlberg & Company Acquire BluSky, a Leading US Provider of Commercial Restoration Services",
+        "url": "https://www.kohlberg.com/partners-group-and-kohlberg-company-acquire-blusky-a-leading-us-provider-of-commercial-restoration-services/",
+        "dateAccessed": "2026-06-24",
+        "type": "press-release"
+      }
+    ]
+  },
+  "pet-services": {
+    "dataStatus": "complete",
+    "confidence": "medium",
+    "tam": {
+      "total": {
+        "value": 2.0,
+        "unit": "billion",
+        "source": "src-1"
+      },
+      "year": 2025,
+      "newConstruction": {
+        "value": 0,
+        "unit": "billion",
+        "modeledEstimate": true,
+        "assumption": "Residential pet services (dog walking, pet sitting, in-home pet care, pet waste removal) is a pure recurring service category with no construction component. New construction is structurally zero.",
+        "source": null
+      },
+      "renovationRepair": {
+        "value": 2.0,
+        "unit": "billion",
+        "modeledEstimate": true,
+        "assumption": "The entire TAM is recurring residential service revenue, shown in the renovation/repair field as the recurring-service TAM. Built from IBISWorld US Dog Walking Services (which includes pet sitting) at $1.3B in 2025 (src-1) plus a modeled US pet waste removal component of roughly $0.7B derived from third-party global pet waste pickup estimates of $1.8 to 2.1B (src-5, src-6) scaled to a US share. Rounded to $2.0B.",
+        "source": "src-1"
+      },
+      "methodology": "TAM is built from two sourced legs. Leg 1: IBISWorld classifies US Dog Walking Services at $1.3B in 2025; this classification explicitly includes both dog walking and in-home pet sitting (src-1, src-2). Grand View independently sizes global pet sitting at $2.69B in 2024 with the US at 27.1%, implying roughly $0.73B of US pet sitting alone, consistent with IBISWorld's combined $1.3B walking-plus-sitting figure (src-3). Leg 2: pet waste removal (poop scooping) is tracked separately by IBISWorld as Pet Waste Management Services; precise US revenue is paywalled, so we model roughly $0.7B for the US by scaling third-party global pet waste pickup estimates of $1.8 to 2.1B (src-5, src-6) to a US share. Combined recurring residential TAM rounds to about $2.0B. Consistency check: the category is extremely fragmented (35,349 US dog walking and sitting businesses, none above 5% share, per src-2). The largest sourced corporate revenues are small relative to TAM and concentrate in tech-enabled marketplaces that also span boarding and daycare: Rover total revenue was about $235M in 2023 (src-7) and Wag total revenue was $70.5M in 2024 with only its Services segment of $21.6M representing walking and sitting (src-8). Top in-scope corporate revenue is a low-single-digit-percent slice of the $2.0B TAM, consistent with a fragmentation score of 5.",
+      "confidence": "medium"
+    },
+    "topPlayers": [
+      {
+        "name": "Rover (Rover Group)",
+        "approxRevenue": {
+          "value": 235,
+          "unit": "million",
+          "source": "src-7"
+        },
+        "ownership": "PE-backed",
+        "sponsor": "Blackstone (acquired for about $2.3B, closed February 2024)",
+        "note": "Tech-enabled marketplace, not a roll-up. The $235M is total 2023 company revenue (take-rate on gross bookings) and spans boarding, in-home pet sitting, doggy daycare, dog walking, and drop-in visits, so only a portion is in-scope residential walking and sitting.",
+        "website": "https://www.rover.com",
         "source": "src-7"
       },
       {
-        "platform": "Blackmon Mooring / BMS CAT",
-        "sponsor": "AEA Investors",
-        "thesis": "Consolidate restoration and catastrophe-response firms onto a national platform.",
-        "notableAddOns": "11 acquisitions since March 2020.",
-        "link": "https://pestakeholder.org/news/disaster-recovery-industry-dominated-by-private-equity/",
-        "linkType": "press-release",
-        "source": "src-7"
+        "name": "Wag! (Wag! Group Co.)",
+        "approxRevenue": {
+          "value": 70.5,
+          "unit": "million",
+          "source": "src-8"
+        },
+        "ownership": "public",
+        "sponsor": "Publicly traded (NASDAQ: PET); filed Chapter 11 in July 2025",
+        "note": "On-demand marketplace, not a roll-up. $70.5M is total 2024 revenue; only the Services segment of $21.6M is dog walking, sitting, and training, the rest is Wellness ($42.7M) and Pet Food and Treats ($6.2M).",
+        "website": "https://wagwalking.com",
+        "source": "src-8"
       },
       {
-        "platform": "Guardian Restoration Partners",
-        "sponsor": "Alpine Investors",
-        "thesis": "Newer buy-and-build platform consolidating independent restoration contractors.",
-        "notableAddOns": "6 acquisitions April-October 2024.",
-        "link": "https://pestakeholder.org/news/disaster-recovery-industry-dominated-by-private-equity/",
-        "linkType": "press-release",
-        "source": "src-7"
+        "name": "DoodyCalls",
+        "approxRevenue": {
+          "value": null,
+          "unit": "million",
+          "source": null
+        },
+        "ownership": "franchise",
+        "sponsor": "Authority Brands (acquired February 2021; Authority Brands is owned by Apax Partners since 2018)",
+        "note": "Largest pet-waste-removal franchise system. System-wide and corporate revenue not publicly disclosed; per-unit initial investment is roughly $36,000 to $53,000. Mix of residential and HOA/commercial pickup.",
+        "website": "https://www.doodycalls.com",
+        "source": "src-9"
       },
       {
-        "platform": "HighGround Restoration Group",
-        "sponsor": "Trivest Partners",
-        "thesis": "No-PE-fee buy-and-build of founder-owned restoration companies.",
-        "notableAddOns": "Invested in 14 restoration companies since Feb 2020.",
-        "link": "https://pestakeholder.org/news/disaster-recovery-industry-dominated-by-private-equity/",
+        "name": "Scoop Soldiers",
+        "approxRevenue": {
+          "value": null,
+          "unit": "million",
+          "source": null
+        },
+        "ownership": "franchise",
+        "sponsor": "Independent franchisor (began franchising 2019); growing via tuck-in acquisitions of local operators",
+        "note": "Pet waste removal franchise; about 96 franchised territories across 16 states by 2023. Revenue undisclosed. Primarily residential recurring pickup.",
+        "website": "https://scoopsoldiers.com",
+        "source": "src-10"
+      },
+      {
+        "name": "Pet Butler",
+        "approxRevenue": {
+          "value": null,
+          "unit": "million",
+          "source": null
+        },
+        "ownership": "franchise",
+        "sponsor": "Spring-Green Enterprises (acquired 2017)",
+        "note": "Pet waste removal franchise founded 1988. Revenue undisclosed. Residential and commercial pickup.",
+        "website": "https://www.petbutler.com",
+        "source": "src-11"
+      }
+    ],
+    "rollups": [
+      {
+        "platform": "Authority Brands (DoodyCalls, Woofie's)",
+        "sponsor": "Apax Partners (majority since 2018)",
+        "thesis": "Multi-brand home and pet services franchise platform that adds recurring pet-services brands alongside 12+ home-services franchisors, cross-selling shared marketing, technology, and operations to franchisees.",
+        "notableAddOns": "DoodyCalls (pet waste removal, acquired 2021) and Woofie's (mobile pet care, grooming, and dog walking)",
+        "link": "https://www.prnewswire.com/news-releases/authority-brands-acquires-doodycalls-301231568.html",
+        "linkType": "press-release",
+        "source": "src-9"
+      },
+      {
+        "platform": "Scoop Soldiers",
+        "sponsor": "Independent franchisor (founder-led)",
+        "thesis": "Consolidate fragmented local pet-waste-removal operators by acquiring established neighborhood scoopers and converting them to franchised territories with national support and brand standards.",
+        "notableAddOns": "Acquisition of Dog Waste Management (Cleveland, Ohio) to enter that market",
+        "link": "https://www.einpresswire.com/article/888044630/scoop-soldiers-expands-into-cleveland-ohio-through-acquisition-of-dog-waste-management",
+        "linkType": "press-release",
+        "source": "src-10"
+      },
+      {
+        "platform": "Blackstone (Rover Group)",
+        "sponsor": "Blackstone (private equity)",
+        "thesis": "Take-private of the largest tech-enabled pet-care marketplace to scale a recurring residential pet-services demand engine (walking, sitting, boarding, daycare). Platform consolidation rather than franchise roll-up.",
+        "notableAddOns": "Rover had previously acquired DogVacay (2017) and international platforms; Blackstone deal closed February 2024 at about $2.3B.",
+        "link": "https://www.blackstone.com/news/press/blackstone-completes-acquisition-of-rover/",
         "linkType": "press-release",
         "source": "src-7"
       }
     ],
     "fragmentation": {
       "score": 5,
-      "rationale": "Highly fragmented: 62,582 damage-restoration establishments in the US (IBISWorld, 2025, +4.3% YoY) and the trade/PE press consistently describes the industry as 'highly fragmented,' traditionally run by small local independents (Sherwood News: 'replete with mom-and-pop operators'). Even the largest player (Servpro, ~$4.5B systemwide) is a franchise network of ~2,380 independently-owned units, not consolidated ownership. The long tail of single-location operators dominates the establishment count.",
-      "source": "src-1"
+      "rationale": "Extremely fragmented. IBISWorld reports 35,349 US dog walking and pet sitting businesses in 2025 with no single company holding more than 5% market share; most operators are small and serve single neighborhoods because geographic expansion is logistically hard. Pet waste removal is similarly fragmented across thousands of local scoopers. Even the largest players (Rover, Wag, the franchise systems) collectively hold a low-single-digit share of the in-scope recurring TAM.",
+      "source": "src-2"
     },
     "rollupIntensity": {
-      "score": 5,
-      "rationale": "Very active. Multiple well-capitalized PE platforms are actively consolidating: Servpro/Blackstone, BELFOR/American Securities, ATI/TSG, BluSky/Partners Group+Kohlberg, Blackmon Mooring/AEA, HighGround/Trivest, Guardian/Alpine, plus Cotton/Sun Capital and Atlas/Great Range (named in PE Stakeholder Project). PE Stakeholder Project reports PE firms acquired stakes in at least 49 additional restoration companies since Sept 2023, with 2024 on pace to surpass 2021 levels. Insurance-funded, recurring, recession-resilient demand makes this one of the most actively rolled-up home-services verticals."
+      "score": 3,
+      "rationale": "Moderate and rising. Franchise consolidators (Authority Brands/DoodyCalls, Scoop Soldiers tuck-ins, Pet Butler under Spring-Green) are actively franchising and acquiring local pet-waste operators, and Blackstone took Rover private in 2024. However, most consolidation to date is in pet waste removal and marketplace platforms rather than systematic buy-and-build of independent dog-walking and sitting operators, which remain hard to roll up due to hyper-local, low-asset, owner-operator economics."
     },
     "sources": [
       {
         "id": "src-1",
         "publisher": "IBISWorld",
-        "title": "Damage Restoration Services in the US - Market Size (2025) & Number of Businesses",
-        "url": "https://www.ibisworld.com/united-states/market-size/damage-restoration-services/6278/",
-        "type": "market-research",
-        "dateAccessed": "2026-06-24"
+        "title": "Dog Walking Services in the US - Market Size Statistics (2025)",
+        "url": "https://www.ibisworld.com/united-states/market-size/dog-walking-services/4350/",
+        "dateAccessed": "2026-06-24",
+        "type": "market-research"
       },
       {
         "id": "src-2",
-        "publisher": "Sherwood News (Robinhood Media)",
-        "title": "Natural disasters are making a mess of America. Private equity wants the cleanup cash",
-        "url": "https://sherwood.news/business/natural-disaster-clean-up-business-private-equity/",
-        "type": "trade-press",
-        "dateAccessed": "2026-06-24"
+        "publisher": "IBISWorld",
+        "title": "Dog Walking Services in the US - Industry Analysis (fragmentation, business counts)",
+        "url": "https://www.ibisworld.com/united-states/industry/dog-walking-services/4350/",
+        "dateAccessed": "2026-06-24",
+        "type": "market-research"
       },
       {
         "id": "src-3",
-        "publisher": "Franchise Times",
-        "title": "City Wide, CRDN Led Cleaning and Restoration Sales Growth in Top 400",
-        "url": "https://www.franchisetimes.com/franchise_news/city-wide-crdn-led-cleaning-and-restoration-sales-growth-in-top-400/article_1d08f9df-d17d-4fb4-9242-700e755592bf.html",
-        "type": "trade-press",
-        "dateAccessed": "2026-06-24"
+        "publisher": "Grand View Research",
+        "title": "Pet Sitting Market Size, Share and Trends Report (global $2.69B 2024, US 27.1% share)",
+        "url": "https://www.grandviewresearch.com/industry-analysis/pet-sitting-market",
+        "dateAccessed": "2026-06-24",
+        "type": "market-research"
       },
       {
         "id": "src-5",
-        "publisher": "American Securities",
-        "title": "BELFOR - Company (American Securities portfolio)",
-        "url": "https://www.american-securities.com/en/companies/belfor",
-        "type": "trade-press",
-        "dateAccessed": "2026-06-24"
+        "publisher": "Dataintelo",
+        "title": "Pet Waste Pickup Service Market Research Report (global pet waste removal market)",
+        "url": "https://dataintelo.com/report/global-pet-waste-removal-services-market",
+        "dateAccessed": "2026-06-24",
+        "type": "market-research"
       },
       {
         "id": "src-6",
-        "publisher": "ATI Restoration",
-        "title": "ATI Announces Investment from TSG Consumer Partners",
-        "url": "https://atirestoration.com/press-releases/ati-announces-investment-from-tsg-consumer-partners/",
-        "type": "trade-press",
-        "dateAccessed": "2026-06-24"
+        "publisher": "Verified Market Research",
+        "title": "Pet Waste Removal Services Market Size, Scope and Forecast",
+        "url": "https://www.verifiedmarketresearch.com/product/pet-waste-removal-services-market/",
+        "dateAccessed": "2026-06-24",
+        "type": "market-research"
       },
       {
         "id": "src-7",
-        "publisher": "Private Equity Stakeholder Project",
-        "title": "Disaster recovery industry dominated by private equity",
-        "url": "https://pestakeholder.org/news/disaster-recovery-industry-dominated-by-private-equity/",
-        "type": "trade-press",
-        "dateAccessed": "2026-06-24"
+        "publisher": "Blackstone",
+        "title": "Blackstone Completes Acquisition of Rover (~$2.3B; Rover 2023 revenue context)",
+        "url": "https://www.blackstone.com/news/press/blackstone-completes-acquisition-of-rover/",
+        "dateAccessed": "2026-06-24",
+        "type": "press-release"
       },
       {
         "id": "src-8",
-        "publisher": "Orange County Business Journal",
-        "title": "Orange County's ATI Restoration is a Major Player in Disaster Response",
-        "url": "https://www.ocbj.com/real-estate/orange-countys-ati-restoration-is-a-major-player-in-disaster-response/",
-        "type": "trade-press",
-        "dateAccessed": "2026-06-24"
+        "publisher": "GlobeNewswire (Wag! Group Co.)",
+        "title": "Wag! Reports Fourth Quarter and Full Year 2024 Results",
+        "url": "https://www.globenewswire.com/news-release/2025/03/24/3047690/0/en/Wag-Reports-Fourth-Quarter-and-Full-Year-2024-Results.html",
+        "dateAccessed": "2026-06-24",
+        "type": "filing"
+      },
+      {
+        "id": "src-9",
+        "publisher": "PR Newswire (Authority Brands)",
+        "title": "Authority Brands Acquires DoodyCalls",
+        "url": "https://www.prnewswire.com/news-releases/authority-brands-acquires-doodycalls-301231568.html",
+        "dateAccessed": "2026-06-24",
+        "type": "press-release"
+      },
+      {
+        "id": "src-10",
+        "publisher": "EIN Presswire (Scoop Soldiers)",
+        "title": "Scoop Soldiers Expands into Cleveland, Ohio Through Acquisition of Dog Waste Management",
+        "url": "https://www.einpresswire.com/article/888044630/scoop-soldiers-expands-into-cleveland-ohio-through-acquisition-of-dog-waste-management",
+        "dateAccessed": "2026-06-24",
+        "type": "press-release"
+      },
+      {
+        "id": "src-11",
+        "publisher": "Pet Butler Franchise",
+        "title": "Pet Care Franchise Opportunities With Pet Butler (ownership: Spring-Green Enterprises since 2017)",
+        "url": "https://petbutlerfranchise.com/",
+        "dateAccessed": "2026-06-24",
+        "type": "trade-press"
       }
     ]
   },

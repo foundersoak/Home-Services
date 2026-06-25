@@ -165,13 +165,17 @@ export function createHotspots({ systems, clusters, camera, controls, container,
     dirty = false
   }
 
+  // Frame a cluster gently: stand back far enough that the whole group of pins is comfortably in
+  // view (a close standoff felt like an abrupt zoom), and aim a touch toward house center so the
+  // cluster reads in context rather than filling the frame.
   function clusterFraming(anchor) {
     const dx = anchor[0]
     const dz = anchor[2]
     const len = Math.hypot(dx, dz) || 1
+    const dist = 13
     return {
-      pos: [anchor[0] + (dx / len) * 7, anchor[1] + 2.6, anchor[2] + (dz / len) * 7],
-      target: anchor
+      pos: [anchor[0] + (dx / len) * dist, anchor[1] + 4.2, anchor[2] + (dz / len) * dist],
+      target: [anchor[0] * 0.55, Math.max(anchor[1] - 0.6, 1.6), anchor[2] * 0.55]
     }
   }
 
@@ -196,12 +200,6 @@ export function createHotspots({ systems, clusters, camera, controls, container,
   function showAll() {
     expanded = 'all'
     recomputeActive()
-  }
-
-  function dim(exceptId) {
-    for (const p of systemPins) {
-      p.el.classList.toggle('is-dimmed', exceptId != null && p.data.id !== exceptId)
-    }
   }
 
   const TIER_CLASSES = ['tier-hot', 'tier-warm', 'tier-cool']
@@ -256,7 +254,6 @@ export function createHotspots({ systems, clusters, camera, controls, container,
     collapse,
     setZoneFilter,
     showAll,
-    dim,
     applyScores,
     markDirty,
     setVisible,

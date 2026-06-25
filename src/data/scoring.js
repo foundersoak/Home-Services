@@ -52,7 +52,9 @@ export function computeScores(systems, weights = DEFAULT_WEIGHTS) {
     scored.push(rec)
   }
 
-  scored.sort((a, b) => b.score - a.score)
+  // Sort by score, tie-broken by size (nTAM). With a single discrete component at full weight
+  // (frag/roll are 1-5), many systems share a score; the tie-break keeps tiering deterministic.
+  scored.sort((a, b) => (b.score !== a.score ? b.score - a.score : b.nTAM - a.nTAM))
   const n = scored.length
   scored.forEach((rec, i) => {
     const frac = n <= 1 ? 0 : i / n

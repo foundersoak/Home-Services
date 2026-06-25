@@ -87,8 +87,9 @@ const state = {
 const panel = createPanel({
   container: app,
   onClose: () => {
-    hotspots.dim(null)
+    // Restore the pins that were hidden while the panel was focused on one system.
     if (mode === 'interior') exitInterior()
+    else hotspots.setVisible(true)
   }
 })
 
@@ -132,6 +133,7 @@ const controlsUi = createControls({
       state.weights = w
       refreshScores()
     },
+    onZoom: (dir) => zoomBy(dir === 'in' ? 0.78 : 1.28),
     onSelectSystem: (s) => selectSystem(s)
   }
 })
@@ -140,6 +142,20 @@ const controlsUi = createControls({
 if (new URLSearchParams(location.search).has('calib')) {
   app.classList.add('calib-mode')
   hotspots.showAll()
+  // Raycast a screen pixel (CSS px) onto the model and return the world point, for anchor tuning.
+  window.__pick = (px, py) => {
+    const r = new THREE.Raycaster()
+    const ndc = new THREE.Vector2((px / window.innerWidth) * 2 - 1, -(py / window.innerHeight) * 2 + 1)
+    r.setFromCamera(ndc, camera)
+    const hits = r.intersectObjects(scene.children, true)
+    if (!hits.length) return null
+    const p = hits[0].point
+    return { x: +p.x.toFixed(2), y: +p.y.toFixed(2), z: +p.z.toFixed(2) }
+  }
+  window.__cam = () => ({
+    pos: camera.position.toArray().map((v) => +v.toFixed(2)),
+    target: controls.target.toArray().map((v) => +v.toFixed(2))
+  })
 }
 
 // Default interior framing (overridden per system by interiorCamera).
@@ -157,28 +173,44 @@ function enterInterior(s) {
   }, 330)
 }
 
-function exitInterior(framing) {
+// restorePins=false keeps pins hidden after the swap (used when exiting interior into a still-open
+// exterior panel, where the pins should stay hidden until the panel itself closes).
+function exitInterior(framing, restorePins = true) {
   veil.classList.add('is-active')
   setTimeout(() => {
     mode = 'exterior'
     if (interiorGroup) interiorGroup.visible = false
     if (houseGroup) houseGroup.visible = true
-    hotspots.setVisible(true)
+    if (restorePins) hotspots.setVisible(true)
     if (framing) flyTo(framing, camera, controls, { duration: 0.4 })
     else resetCamera(camera, controls, { duration: 0.4 })
     veil.classList.remove('is-active')
   }, 330)
 }
 
+// Dolly the camera toward (factor<1) or away from (factor>1) the current target, clamped to the
+// orbit distance limits. Keeps the view direction and target, so it reads as a clean zoom.
+function zoomBy(factor) {
+  controls.autoRotate = false
+  const t = controls.target
+  const offset = new THREE.Vector3().subVectors(camera.position, t)
+  const dist = THREE.MathUtils.clamp(offset.length() * factor, controls.minDistance, controls.maxDistance)
+  offset.setLength(dist)
+  flyTo({ pos: [t.x + offset.x, t.y + offset.y, t.z + offset.z], target: [t.x, t.y, t.z] }, camera, controls, {
+    duration: 0.3
+  })
+}
+
 function selectSystem(s) {
   controls.autoRotate = false
-  hotspots.dim(s.id)
   panel.open(s, state.scores.get(s.id))
+  // Hide every other pin while focused on one system, so no stray pins show through the house.
   if (s.interior && interiorGroup) {
-    enterInterior(s)
+    enterInterior(s) // already hides all pins
   } else if (mode === 'interior') {
-    exitInterior(s.camera)
+    exitInterior(s.camera, false) // keep pins hidden; the panel is still open
   } else {
+    hotspots.setVisible(false)
     flyTo(s.camera, camera, controls)
   }
 }
@@ -199,11 +231,15 @@ if (import.meta.env.DEV || new URLSearchParams(location.search).has('validate'))
 
 document.getElementById('reset-view').addEventListener('click', () => {
   controls.autoRotate = false
+  const wasOpen = panel.openId != null
+  panel.close() // fires onClose (restores pins / exits interior) only if a panel was open
   hotspots.collapse()
-  hotspots.dim(null)
-  panel.close()
-  if (mode === 'interior') exitInterior()
-  else resetCamera(camera, controls)
+  if (mode === 'interior') {
+    if (!wasOpen) exitInterior()
+  } else {
+    hotspots.setVisible(true)
+    resetCamera(camera, controls)
+  }
 })
 
 function stopAutoRotate() {
