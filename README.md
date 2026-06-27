@@ -57,6 +57,9 @@ src/
 public/
   house.glb            the 3D model (texture-compressed)
   systems/<id>.webp    per-system panel hero images
+tools/
+  gen-sources.mjs      regenerate SOURCES.md from research-data.js
+  smoke.mjs            headless smoke test (console errors + screenshots)
 SOURCES.md             every source, grouped by system
 ```
 

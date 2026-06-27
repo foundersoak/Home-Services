@@ -243,6 +243,14 @@ export function createControls({ container, systems, clusters, getScores, initia
     else renderList()
   }
 
+  // Fully dismiss the list (used by reset-view), regardless of how it was opened.
+  function closeList() {
+    listManuallyOpen = false
+    contextCluster = null
+    applyContextChrome()
+    toggleList(false)
+  }
+
   // Highlight the row for the currently open system (or clear it) and scroll it into view.
   function setActiveRow(idOrNull) {
     activeId = idOrNull || null
@@ -270,6 +278,7 @@ export function createControls({ container, systems, clusters, getScores, initia
     },
     setZoneValue,
     setClusterContext,
-    setActiveRow
+    setActiveRow,
+    closeList
   }
 }

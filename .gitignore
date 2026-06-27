@@ -1,16 +1,16 @@
+# dependencies / build output
 node_modules
 dist
-*.local
-.DS_Store
-*.log
 .vite
-*.mjs
+
+# os / editor
+.DS_Store
+*.local
+*.log
+
+# dev scratch: build-verification screenshots + one-off scripts.
+# Reusable tooling lives in tools/ (re-included below).
 *.png
+*.mjs
 _*.html
-contact.html
-contact2.html
-heroes.html
-views.html
-details.html
-calib.html
-markers.html
+!tools/**

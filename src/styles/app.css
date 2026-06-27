@@ -309,11 +309,28 @@ body {
   #ranked-list.is-context {
     width: min(82vw, 330px);
   }
+  /* Top-anchor and compact the intro so it stops colliding head-on with the centered house and its
+     cluster labels (vertically-centered intro overlaps the model on a narrow portrait screen). */
+  .intro {
+    top: 74px;
+    left: 18px;
+    right: 18px;
+    max-width: none;
+    transform: none;
+    animation: none;
+    opacity: 1;
+  }
+  .intro.is-gone {
+    transform: translateY(-10px);
+  }
   .intro-title {
-    font-size: clamp(2rem, 9vw, 2.7rem);
+    font-size: clamp(1.9rem, 8.5vw, 2.5rem);
   }
   .intro-sub {
-    font-size: 14px;
+    display: none;
+  }
+  .intro-hint {
+    margin-top: 16px;
   }
   #legend {
     display: none;

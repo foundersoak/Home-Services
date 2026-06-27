@@ -58,7 +58,9 @@ let interiorGroup = null
 let mode = 'exterior'
 let lastOpened = null // last system whose panel was opened (drives close-to-L2)
 let resetting = false // true during a reset-view, so close-to-L2 does not fight the wide reset
-let pendingEnter = null // timeout id for the deferred interior scene swap (cancellable on close)
+let zoning = false // true during a dock zone change, so close-to-L2 does not fight it
+let pendingEnter = null // timeout id for the deferred interior enter swap (cancellable)
+let pendingExit = null // timeout id for the deferred interior exit swap (cancellable)
 const veil = document.getElementById('stage-veil')
 
 loadHouse().then((house) => {
@@ -127,12 +129,27 @@ const controlsUi = createControls({
   initialWeights: state.weights,
   handlers: {
     onZone: (id) => {
+      // A zone change must land on a clean exterior state, so tear down any open panel / interior
+      // scene first. returnToContext early-returns while zoning; this path owns the camera + LOD.
+      zoning = true
+      if (panel.openId != null) panel.close()
+      controlsUi.setActiveRow(null)
       if (id == null) {
         hotspots.collapse()
-        resetCamera(camera, controls)
+        if (mode === 'interior') {
+          exitInterior() // swap to exterior + wide reset + restore pins (panel is closed)
+        } else {
+          hotspots.setVisible(true)
+          resetCamera(camera, controls)
+        }
+      } else if (mode === 'interior') {
+        hotspots.expand(id, { fly: false }) // set LOD + scope the list without flying yet
+        exitInterior(hotspots.clusterFramingFor(id)) // swap to exterior and fly to the cluster
       } else {
+        hotspots.setVisible(true) // a just-closed panel may have left pins hidden
         hotspots.expand(id)
       }
+      zoning = false
     },
     onHeatmap: (on) => {
       state.heatmap = on
@@ -171,6 +188,8 @@ if (new URLSearchParams(location.search).has('calib')) {
 const DEFAULT_INTERIOR = { pos: [5.5, 4, 7], target: [-0.3, 2.3, -0.8] }
 
 function enterInterior(s) {
+  cancelPendingExit() // a pending exit would fight this enter
+  if (pendingEnter) clearTimeout(pendingEnter) // collapse a rapid second enter into one
   veil.classList.add('is-active')
   pendingEnter = setTimeout(() => {
     pendingEnter = null
@@ -183,7 +202,7 @@ function enterInterior(s) {
   }, 330)
 }
 
-// If the panel closes (or reset fires) before the deferred interior swap runs, cancel it so we are
+// If the panel closes (or reset fires) before the deferred enter swap runs, cancel it so we are
 // not stranded inside the interior scene with no panel open.
 function cancelPendingEnter() {
   if (pendingEnter) {
@@ -192,16 +211,26 @@ function cancelPendingEnter() {
     veil.classList.remove('is-active')
   }
 }
+function cancelPendingExit() {
+  if (pendingExit) {
+    clearTimeout(pendingExit)
+    pendingExit = null
+  }
+}
 
 // restorePins=false keeps pins hidden after the swap (used when exiting interior into a still-open
-// exterior panel, where the pins should stay hidden until the panel itself closes).
+// exterior panel, where the pins should stay hidden until the panel itself closes). The deferred
+// swap is cancellable (a newer exit supersedes a stale one) and never restores pins while a panel
+// is still open, so a stale exit can never reveal stray pins through the house.
 function exitInterior(framing, restorePins = true) {
+  if (pendingExit) clearTimeout(pendingExit) // supersede any in-flight exit
   veil.classList.add('is-active')
-  setTimeout(() => {
+  pendingExit = setTimeout(() => {
+    pendingExit = null
     mode = 'exterior'
     if (interiorGroup) interiorGroup.visible = false
     if (houseGroup) houseGroup.visible = true
-    if (restorePins) hotspots.setVisible(true)
+    if (restorePins && panel.openId == null) hotspots.setVisible(true)
     if (framing) flyTo(framing, camera, controls, { duration: 0.4 })
     else resetCamera(camera, controls, { duration: 0.4 })
     veil.classList.remove('is-active')
@@ -223,10 +252,11 @@ function zoomBy(factor) {
 
 function selectSystem(s) {
   controls.autoRotate = false
-  // Ensure a cluster is expanded so closing the panel has an L2 to return to (e.g. when the system
-  // was picked from the GLOBAL ranked list while collapsed). fly:false avoids a stray cluster
-  // flight before the system flight below; it also opens the contextual list scoped to the cluster.
-  if (hotspots.expandedCluster == null) hotspots.expand(s.displayCluster, { fly: false })
+  // Ensure THIS system's cluster is the expanded one, so closing the panel returns to the right
+  // L2 (e.g. when the system was picked from the GLOBAL ranked list while a different cluster, or
+  // none, or the calib 'all' set was active). fly:false avoids a stray cluster flight before the
+  // system flight below; it also scopes the contextual list to the cluster.
+  if (hotspots.expandedCluster !== s.displayCluster) hotspots.expand(s.displayCluster, { fly: false })
   // Hide every other pin immediately, BEFORE any async transition, so no pins flash through the
   // house (the expand above just made the cluster's pins active). Stays hidden until the panel closes.
   hotspots.setVisible(false)
@@ -247,7 +277,7 @@ function selectSystem(s) {
 // deliberate wide reset is not overridden here.
 function returnToContext() {
   cancelPendingEnter() // a close mid interior-transition returns cleanly to the exterior L2
-  if (resetting) return
+  if (resetting || zoning) return // reset-view / zone-change own their own camera + LOD teardown
   controlsUi.setActiveRow(null)
   const cl = hotspots.expandedCluster || (lastOpened && lastOpened.displayCluster)
   if (mode === 'interior') {
@@ -281,7 +311,8 @@ document.getElementById('reset-view').addEventListener('click', () => {
   const wasInterior = mode === 'interior'
   panel.close() // fires onClose -> returnToContext, which early-returns while resetting
   controlsUi.setActiveRow(null)
-  hotspots.collapse() // fires onCollapse -> clears zone select + contextual list
+  controlsUi.closeList() // a full reset also dismisses a manually-opened ranked list
+  hotspots.collapse() // fires onCollapse -> clears zone select + contextual list scope
   if (wasInterior) {
     exitInterior() // swap back to exterior, wide reset, restore cluster pins
   } else {

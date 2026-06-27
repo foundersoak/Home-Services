@@ -21,6 +21,7 @@ export function createHotspots({ systems, clusters, camera, controls, container,
   const _ray = new THREE.Raycaster()
   const _origin = new THREE.Vector3()
   const _rdir = new THREE.Vector3()
+  const _last = { x: 0, y: 0, z: 0 } // last camera position, to detect a settled frame for de-overlap
 
   let expanded = null // null = clustered | 'all' = every system | clusterId = one cluster
   let dirty = true
@@ -118,6 +119,10 @@ export function createHotspots({ systems, clusters, camera, controls, container,
     const cx = camera.position.x
     const cy = camera.position.y
     const cz = camera.position.z
+    const camMoved = Math.abs(cx - _last.x) + Math.abs(cy - _last.y) + Math.abs(cz - _last.z)
+    _last.x = cx
+    _last.y = cy
+    _last.z = cz
     const visible = []
 
     for (const p of activePins) {
@@ -165,18 +170,19 @@ export function createHotspots({ systems, clusters, camera, controls, container,
       visible.push({ p, sx: (_v.x * 0.5 + 0.5) * w, sy: (-_v.y * 0.5 + 0.5) * h })
     }
 
-    // L2 de-overlap: same-wall systems project to nearly the same point and stack. Nudge the
-    // lower of each near-colliding pair downward so dots and labels separate. Operates ONLY on
-    // pins that already passed every occlusion test, so it can never reveal a pin behind the house.
-    if (expanded !== null && expanded !== 'all' && visible.length > 1) {
+    // L2 de-overlap: same-wall systems project to nearly the same point and stack. Nudge the lower
+    // of each near-colliding pair downward so dots separate. Operates ONLY on pins that already
+    // passed every occlusion test, so it can never reveal a pin behind the house. Gated to settled
+    // frames (camMoved tiny) so it does not jitter while the camera flies, and the horizontal gate
+    // matches the ~40px L2 hit pad so genuinely separated pins are left in place.
+    if (expanded !== null && expanded !== 'all' && visible.length > 1 && camMoved < 0.02) {
       visible.sort((u, v) => u.sy - v.sy)
       for (let iter = 0; iter < 3; iter++) {
         let moved = false
         for (let i = 1; i < visible.length; i++) {
           const prev = visible[i - 1]
           const cur = visible[i]
-          // 40px keeps the enlarged L2 hit pads (about 40px) from overlapping into mis-clicks.
-          if (Math.abs(cur.sx - prev.sx) < 72 && cur.sy - prev.sy < 40) {
+          if (Math.abs(cur.sx - prev.sx) < 44 && cur.sy - prev.sy < 40) {
             cur.sy = prev.sy + 40
             moved = true
           }
@@ -202,6 +208,7 @@ export function createHotspots({ systems, clusters, camera, controls, container,
   // for expand() and the close-to-L2 return path in main.js.
   function clusterFramingFor(clusterId) {
     const members = systems.filter((s) => s.displayCluster === clusterId)
+    if (!members.length) return { pos: [14, 10.5, 17], target: [0, 2.2, 0] } // safety: never divide by an empty set
     let cx0 = 0
     let cy0 = 0
     let cz0 = 0
