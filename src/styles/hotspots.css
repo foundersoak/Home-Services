@@ -48,6 +48,20 @@
   background: var(--forest);
 }
 
+/* L2 (expanded cluster): larger, easier-to-see system dots plus a generous transparent hit pad,
+   so individual systems are simpler to spot and click even when tightly grouped on one wall. */
+#hotspot-layer.is-l2 .hotspot:not(.is-cluster) .hotspot-dot {
+  width: 16px;
+  height: 16px;
+}
+#hotspot-layer.is-l2 .hotspot:not(.is-cluster) .hotspot-dot::before {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  z-index: -1;
+}
+
 .hotspot:hover .hotspot-dot {
   transform: scale(1.22);
 }

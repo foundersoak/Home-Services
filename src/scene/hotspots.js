@@ -15,7 +15,7 @@ import { clusterTier } from '../data/scoring.js'
   filter) expands it into its individual system pins. Only one set is processed per frame.
 */
 
-export function createHotspots({ systems, clusters, camera, controls, container, onSelect, occluder }) {
+export function createHotspots({ systems, clusters, camera, controls, container, onSelect, occluder, onExpand, onCollapse }) {
   const size = { w: window.innerWidth, h: window.innerHeight }
   const _v = new THREE.Vector3()
   const _ray = new THREE.Raycaster()
@@ -89,6 +89,9 @@ export function createHotspots({ systems, clusters, camera, controls, container,
   }
 
   function recomputeActive() {
+    // L2 = a single real cluster expanded (not the landing, not the calib "all" view).
+    const isL2 = expanded !== null && expanded !== 'all'
+    container.classList.toggle('is-l2', isL2)
     if (expanded === null) {
       activePins = clusterPins
       systemPins.forEach(hide)
@@ -102,6 +105,8 @@ export function createHotspots({ systems, clusters, camera, controls, container,
       })
       activePins = systemPins.filter((p) => p.data.displayCluster === expanded)
     }
+    // Bigger hit targets only for the active L2 system pins.
+    for (const p of systemPins) p.el.classList.toggle('is-l2', isL2 && p.data.displayCluster === expanded)
     dirty = true
   }
 
@@ -113,6 +118,7 @@ export function createHotspots({ systems, clusters, camera, controls, container,
     const cx = camera.position.x
     const cy = camera.position.y
     const cz = camera.position.z
+    const visible = []
 
     for (const p of activePins) {
       const a = p.anchor
@@ -156,8 +162,30 @@ export function createHotspots({ systems, clusters, camera, controls, container,
         }
       }
 
-      const sx = (_v.x * 0.5 + 0.5) * w
-      const sy = (-_v.y * 0.5 + 0.5) * h
+      visible.push({ p, sx: (_v.x * 0.5 + 0.5) * w, sy: (-_v.y * 0.5 + 0.5) * h })
+    }
+
+    // L2 de-overlap: same-wall systems project to nearly the same point and stack. Nudge the
+    // lower of each near-colliding pair downward so dots and labels separate. Operates ONLY on
+    // pins that already passed every occlusion test, so it can never reveal a pin behind the house.
+    if (expanded !== null && expanded !== 'all' && visible.length > 1) {
+      visible.sort((u, v) => u.sy - v.sy)
+      for (let iter = 0; iter < 3; iter++) {
+        let moved = false
+        for (let i = 1; i < visible.length; i++) {
+          const prev = visible[i - 1]
+          const cur = visible[i]
+          // 40px keeps the enlarged L2 hit pads (about 40px) from overlapping into mis-clicks.
+          if (Math.abs(cur.sx - prev.sx) < 72 && cur.sy - prev.sy < 40) {
+            cur.sy = prev.sy + 40
+            moved = true
+          }
+        }
+        if (!moved) break
+      }
+    }
+
+    for (const { p, sx, sy } of visible) {
       p.el.style.transform = 'translate3d(' + sx.toFixed(1) + 'px,' + sy.toFixed(1) + 'px,0) translate(-50%,-50%)'
       p.el.classList.remove('is-hidden')
       p.el.style.pointerEvents = 'auto'
@@ -165,31 +193,71 @@ export function createHotspots({ systems, clusters, camera, controls, container,
     dirty = false
   }
 
-  // Frame a cluster gently: stand back far enough that the whole group of pins is comfortably in
-  // view (a close standoff felt like an abrupt zoom), and aim a touch toward house center so the
-  // cluster reads in context rather than filling the frame.
-  function clusterFraming(anchor) {
-    const dx = anchor[0]
-    const dz = anchor[2]
-    const len = Math.hypot(dx, dz) || 1
-    const dist = 13
+  // Frame a cluster to FIT its member pins (camera-only; does not touch LOD state). Centered on the
+  // member centroid and pulled back proportional to how spread out the cluster is, so the whole
+  // group lands on-screen even for tall clusters like envelope (rather than centering on the high
+  // L1 marker and cutting off the ground-level systems). The standoff direction blends the cluster's
+  // averaged outward pin-normal (so members sit in front of the house, not behind it, the root cause
+  // of hard-to-see L2 pins) with the radial direction as a stable fallback. Single-sources the math
+  // for expand() and the close-to-L2 return path in main.js.
+  function clusterFramingFor(clusterId) {
+    const members = systems.filter((s) => s.displayCluster === clusterId)
+    let cx0 = 0
+    let cy0 = 0
+    let cz0 = 0
+    let nx = 0
+    let nz = 0
+    for (const m of members) {
+      cx0 += m.position[0]
+      cy0 += m.position[1]
+      cz0 += m.position[2]
+      if (m.normal) {
+        nx += m.normal[0]
+        nz += m.normal[2]
+      }
+    }
+    const n = members.length || 1
+    const center = [cx0 / n, cy0 / n, cz0 / n]
+    let spread = 0
+    for (const m of members) {
+      spread = Math.max(spread, Math.hypot(m.position[0] - center[0], m.position[1] - center[1], m.position[2] - center[2]))
+    }
+    const mnx = nx / n
+    const mnz = nz / n
+    const mlen = Math.hypot(mnx, mnz)
+    const rlen = Math.hypot(center[0], center[2]) || 1
+    const radial = [center[0] / rlen, center[2] / rlen]
+    let dir
+    if (mlen < 0.2) {
+      dir = radial // averaged normal too weak to trust; keep a radial standoff
+    } else {
+      const lx = (mnx / mlen) * 0.6 + radial[0] * 0.4
+      const lz = (mnz / mlen) * 0.6 + radial[1] * 0.4
+      const llen = Math.hypot(lx, lz) || 1
+      dir = [lx / llen, lz / llen]
+    }
+    const dist = Math.min(Math.max(spread * 1.8 + 7, 11), 19)
+    const lift = Math.min(spread * 0.4 + 2.5, 5)
     return {
-      pos: [anchor[0] + (dx / len) * dist, anchor[1] + 4.2, anchor[2] + (dz / len) * dist],
-      target: [anchor[0] * 0.55, Math.max(anchor[1] - 0.6, 1.6), anchor[2] * 0.55]
+      pos: [center[0] + dir[0] * dist, center[1] + lift, center[2] + dir[1] * dist],
+      target: [center[0], center[1], center[2]]
     }
   }
 
-  function expand(clusterId) {
+  // opts.fly === false sets the LOD state without flying (used when a flight to a system follows
+  // immediately, e.g. selecting a system from the global ranked list while collapsed).
+  function expand(clusterId, opts) {
+    controls.autoRotate = false // entering a cluster ends the idle spin so L2 pins hold still
     expanded = clusterId
     recomputeActive()
-    const c = clusters.find((x) => x.id === clusterId)
-    const anchor = c.anchor || centroid(clusterId)
-    flyTo(clusterFraming(anchor), camera, controls)
+    if (!opts || opts.fly !== false) flyTo(clusterFramingFor(clusterId), camera, controls)
+    if (onExpand) onExpand(clusterId)
   }
 
   function collapse() {
     expanded = null
     recomputeActive()
+    if (onCollapse) onCollapse()
   }
 
   function setZoneFilter(clusterId) {
@@ -252,6 +320,7 @@ export function createHotspots({ systems, clusters, camera, controls, container,
     update,
     expand,
     collapse,
+    clusterFramingFor,
     setZoneFilter,
     showAll,
     applyScores,

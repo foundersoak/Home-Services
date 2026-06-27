@@ -89,6 +89,7 @@ export function createControls({ container, systems, clusters, getScores, initia
       <h3>Systems ranked</h3>
       <button class="rl-close" type="button" aria-label="Close list">Close</button>
     </div>
+    <p class="rl-hint is-hidden">Pins behind the house are still listed here. Click any to open it.</p>
     <div class="rl-sorts">
       ${sortBtn('score', 'Opportunity', true)}
       ${sortBtn('tam', 'TAM')}
@@ -99,6 +100,13 @@ export function createControls({ container, systems, clusters, getScores, initia
   `
   container.appendChild(listPanel)
   let sortKey = 'score'
+  // Contextual mode: when a cluster is expanded (L2) the list is scoped to that cluster and acts
+  // as the fail-safe way to reach pins that are occluded behind the house. activeId highlights the
+  // open system; listManuallyOpen tracks whether the user opened the global list via the dock (so
+  // collapsing a cluster does not yank a deliberately-opened list shut).
+  let contextCluster = null
+  let activeId = null
+  let listManuallyOpen = false
 
   function sortBtn(key, label, active) {
     return `<button class="rl-sort${active ? ' is-active' : ''}" data-sort="${key}" type="button">${label}</button>`
@@ -111,7 +119,10 @@ export function createControls({ container, systems, clusters, getScores, initia
       renderList()
     })
   })
-  listPanel.querySelector('.rl-close').addEventListener('click', () => toggleList(false))
+  listPanel.querySelector('.rl-close').addEventListener('click', () => {
+    listManuallyOpen = false
+    toggleList(false)
+  })
 
   function valOf(s, key, scores) {
     if (key === 'tam') return s.tam && s.tam.total ? s.tam.total.value : null
@@ -123,7 +134,8 @@ export function createControls({ container, systems, clusters, getScores, initia
 
   function renderList() {
     const scores = getScores()
-    const rows = systems
+    const source = contextCluster ? systems.filter((s) => s.displayCluster === contextCluster) : systems
+    const rows = source
       .map((s) => ({
         s,
         v: valOf(s, sortKey, scores),
@@ -144,8 +156,9 @@ export function createControls({ container, systems, clusters, getScores, initia
         const tam = s.tam && s.tam.total && s.tam.total.value != null ? '$' + s.tam.total.value + 'B' : '--'
         const frag = s.fragmentation && s.fragmentation.score != null ? s.fragmentation.score : '--'
         const roll = s.rollupIntensity && s.rollupIntensity.score != null ? s.rollupIntensity.score : '--'
+        const active = s.id === activeId
         return `
-        <button class="rl-row" data-id="${s.id}" type="button">
+        <button class="rl-row${active ? ' is-active' : ''}" data-id="${s.id}" type="button"${active ? ' aria-current="true"' : ''}>
           <span class="rl-dot ${tier ? 'tier-' + tier : ''}"></span>
           <span class="rl-name">${s.name}</span>
           <span class="rl-metric">${tam}</span>
@@ -184,12 +197,66 @@ export function createControls({ container, systems, clusters, getScores, initia
   })
 
   const listBtn = dock.querySelector('#list-btn')
-  listBtn.addEventListener('click', () => toggleList(listPanel.classList.contains('is-hidden')))
+  listBtn.addEventListener('click', () => {
+    const hidden = listPanel.classList.contains('is-hidden')
+    // Already open in cluster-context mode: switch to the GLOBAL all-systems list in one click,
+    // rather than closing (which read as a confusing no-op).
+    if (!hidden && contextCluster != null) {
+      contextCluster = null
+      applyContextChrome()
+      listManuallyOpen = true
+      renderList()
+      return
+    }
+    if (hidden) {
+      contextCluster = null // the dock button always opens the GLOBAL ranked list
+      applyContextChrome()
+      listManuallyOpen = true
+    } else {
+      listManuallyOpen = false
+    }
+    toggleList(hidden)
+  })
   function toggleList(show) {
     listPanel.classList.toggle('is-hidden', !show)
     listBtn.setAttribute('aria-expanded', String(show))
     listBtn.classList.toggle('is-on', show)
     if (show) renderList()
+  }
+
+  function applyContextChrome() {
+    const inCtx = contextCluster != null
+    listPanel.classList.toggle('is-context', inCtx)
+    listPanel.querySelector('.rl-hint').classList.toggle('is-hidden', !inCtx)
+    listPanel.querySelector('.rl-head h3').textContent = inCtx
+      ? (clusters.find((c) => c.id === contextCluster) || {}).name || 'Systems'
+      : 'Systems ranked'
+  }
+
+  // Scope the list to a cluster (L2) and auto-open it, or revert to the global ranked list. A
+  // manually-opened global list is left open when a cluster collapses (listManuallyOpen).
+  function setClusterContext(idOrNull) {
+    contextCluster = idOrNull || null
+    applyContextChrome()
+    if (contextCluster) toggleList(true)
+    else if (!listManuallyOpen) toggleList(false)
+    else renderList()
+  }
+
+  // Highlight the row for the currently open system (or clear it) and scroll it into view.
+  function setActiveRow(idOrNull) {
+    activeId = idOrNull || null
+    if (listPanel.classList.contains('is-hidden')) return
+    listPanel.querySelectorAll('.rl-row').forEach((r) => {
+      const on = r.dataset.id === activeId
+      r.classList.toggle('is-active', on)
+      if (on) {
+        r.setAttribute('aria-current', 'true')
+        requestAnimationFrame(() => r.scrollIntoView({ block: 'nearest' }))
+      } else {
+        r.removeAttribute('aria-current')
+      }
+    })
   }
 
   // Keep the zone dropdown in sync if a cluster is expanded elsewhere.
@@ -201,6 +268,8 @@ export function createControls({ container, systems, clusters, getScores, initia
     refreshList: () => {
       if (!listPanel.classList.contains('is-hidden')) renderList()
     },
-    setZoneValue
+    setZoneValue,
+    setClusterContext,
+    setActiveRow
   }
 }

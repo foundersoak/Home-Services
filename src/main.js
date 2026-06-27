@@ -56,6 +56,9 @@ if (stress) {
 let houseGroup = null
 let interiorGroup = null
 let mode = 'exterior'
+let lastOpened = null // last system whose panel was opened (drives close-to-L2)
+let resetting = false // true during a reset-view, so close-to-L2 does not fight the wide reset
+let pendingEnter = null // timeout id for the deferred interior scene swap (cancellable on close)
 const veil = document.getElementById('stage-veil')
 
 loadHouse().then((house) => {
@@ -86,11 +89,7 @@ const state = {
 
 const panel = createPanel({
   container: app,
-  onClose: () => {
-    // Restore the pins that were hidden while the panel was focused on one system.
-    if (mode === 'interior') exitInterior()
-    else hotspots.setVisible(true)
-  }
+  onClose: () => returnToContext()
 })
 
 // Box proxy of the house mass for raycaster occlusion (hides pins behind the building).
@@ -105,7 +104,17 @@ const hotspots = createHotspots({
   controls,
   container: hotspotLayer,
   onSelect: (s) => selectSystem(s),
-  occluder
+  occluder,
+  // Drive the dock zone <select> and the contextual LHS list from whatever expands a cluster
+  // (pin click, dock select, or close-to-L2), so all three stay in sync.
+  onExpand: (id) => {
+    controlsUi.setZoneValue(id)
+    controlsUi.setClusterContext(id)
+  },
+  onCollapse: () => {
+    controlsUi.setZoneValue(null)
+    controlsUi.setClusterContext(null)
+  }
 })
 
 const legend = createLegend({ container: app })
@@ -163,7 +172,8 @@ const DEFAULT_INTERIOR = { pos: [5.5, 4, 7], target: [-0.3, 2.3, -0.8] }
 
 function enterInterior(s) {
   veil.classList.add('is-active')
-  setTimeout(() => {
+  pendingEnter = setTimeout(() => {
+    pendingEnter = null
     mode = 'interior'
     if (houseGroup) houseGroup.visible = false
     if (interiorGroup) interiorGroup.visible = true
@@ -171,6 +181,16 @@ function enterInterior(s) {
     flyTo(s.interiorCamera || DEFAULT_INTERIOR, camera, controls, { duration: 0.4 })
     veil.classList.remove('is-active')
   }, 330)
+}
+
+// If the panel closes (or reset fires) before the deferred interior swap runs, cancel it so we are
+// not stranded inside the interior scene with no panel open.
+function cancelPendingEnter() {
+  if (pendingEnter) {
+    clearTimeout(pendingEnter)
+    pendingEnter = null
+    veil.classList.remove('is-active')
+  }
 }
 
 // restorePins=false keeps pins hidden after the swap (used when exiting interior into a still-open
@@ -203,15 +223,41 @@ function zoomBy(factor) {
 
 function selectSystem(s) {
   controls.autoRotate = false
+  // Ensure a cluster is expanded so closing the panel has an L2 to return to (e.g. when the system
+  // was picked from the GLOBAL ranked list while collapsed). fly:false avoids a stray cluster
+  // flight before the system flight below; it also opens the contextual list scoped to the cluster.
+  if (hotspots.expandedCluster == null) hotspots.expand(s.displayCluster, { fly: false })
+  // Hide every other pin immediately, BEFORE any async transition, so no pins flash through the
+  // house (the expand above just made the cluster's pins active). Stays hidden until the panel closes.
+  hotspots.setVisible(false)
+  lastOpened = s
   panel.open(s, state.scores.get(s.id))
-  // Hide every other pin while focused on one system, so no stray pins show through the house.
+  controlsUi.setActiveRow(s.id)
   if (s.interior && interiorGroup) {
-    enterInterior(s) // already hides all pins
+    enterInterior(s)
   } else if (mode === 'interior') {
     exitInterior(s.camera, false) // keep pins hidden; the panel is still open
   } else {
-    hotspots.setVisible(false)
     flyTo(s.camera, camera, controls)
+  }
+}
+
+// Closing a detail panel returns the camera to at least the L2 cluster view (sibling pins + the
+// contextual list visible), so picking the next system is easy. reset-view sets `resetting` so its
+// deliberate wide reset is not overridden here.
+function returnToContext() {
+  cancelPendingEnter() // a close mid interior-transition returns cleanly to the exterior L2
+  if (resetting) return
+  controlsUi.setActiveRow(null)
+  const cl = hotspots.expandedCluster || (lastOpened && lastOpened.displayCluster)
+  if (mode === 'interior') {
+    exitInterior(cl ? hotspots.clusterFramingFor(cl) : undefined)
+  } else if (cl) {
+    hotspots.setVisible(true)
+    flyTo(hotspots.clusterFramingFor(cl), camera, controls, { duration: 0.6 })
+  } else {
+    hotspots.setVisible(true)
+    resetCamera(camera, controls)
   }
 }
 
@@ -231,15 +277,24 @@ if (import.meta.env.DEV || new URLSearchParams(location.search).has('validate'))
 
 document.getElementById('reset-view').addEventListener('click', () => {
   controls.autoRotate = false
-  const wasOpen = panel.openId != null
-  panel.close() // fires onClose (restores pins / exits interior) only if a panel was open
-  hotspots.collapse()
-  if (mode === 'interior') {
-    if (!wasOpen) exitInterior()
+  resetting = true
+  const wasInterior = mode === 'interior'
+  panel.close() // fires onClose -> returnToContext, which early-returns while resetting
+  controlsUi.setActiveRow(null)
+  hotspots.collapse() // fires onCollapse -> clears zone select + contextual list
+  if (wasInterior) {
+    exitInterior() // swap back to exterior, wide reset, restore cluster pins
   } else {
     hotspots.setVisible(true)
     resetCamera(camera, controls)
   }
+  resetting = false
+})
+
+// Escape closes the open detail panel (which flies back to the L2 cluster view), so keyboard users
+// are never stranded in a system with no quick way out.
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && panel.openId != null) panel.close()
 })
 
 function stopAutoRotate() {

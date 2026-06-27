@@ -307,6 +307,30 @@
   color: var(--ink-faint);
 }
 
+/* Active row: the system whose detail panel is open (highlighted in the contextual list). */
+.rl-row.is-active {
+  background: var(--paper-warm);
+  box-shadow: inset 3px 0 0 var(--forest);
+}
+.rl-row.is-active .rl-name {
+  color: var(--forest);
+}
+
+/* Contextual (cluster-scoped) mode: hide the global sort tabs, show the fail-safe hint. */
+#ranked-list.is-context .rl-sorts {
+  display: none;
+}
+.rl-hint {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--ink-faint);
+  margin: 0;
+  padding: 2px 22px 12px;
+}
+.rl-hint.is-hidden {
+  display: none;
+}
+
 /* Legend */
 #legend {
   position: absolute;

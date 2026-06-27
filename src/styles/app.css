@@ -304,6 +304,11 @@ body {
   #ranked-list {
     width: 100vw;
   }
+  /* The contextual L2 list auto-opens, so keep it a side panel (house + pins stay visible) rather
+     than the full-width sheet the manually-opened global list uses. */
+  #ranked-list.is-context {
+    width: min(82vw, 330px);
+  }
   .intro-title {
     font-size: clamp(2rem, 9vw, 2.7rem);
   }
